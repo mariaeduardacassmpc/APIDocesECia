@@ -25,7 +25,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<ProductReportService>();
 
         services.AddScoped<IImageStorage, FileSystemImageStorage>();
-        builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
     }

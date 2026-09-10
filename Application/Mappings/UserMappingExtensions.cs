@@ -9,7 +9,7 @@ public static class UserMappingExtensions
     {
         return new UserDto
         {
-            Id = user.Id,
+            Id = user.UserId,
             Email = user.Email
         };
     }
