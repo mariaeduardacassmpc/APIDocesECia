@@ -9,7 +9,7 @@ namespace ApiDoces.Controllers;
 public class CategoryController(CategoryService categoryService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto dto)
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryInputDto dto)
     {
         await categoryService.CreateCategory(dto);
 
