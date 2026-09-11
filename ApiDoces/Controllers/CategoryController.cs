@@ -1,5 +1,7 @@
-﻿using ApiDoces.Services;
-using ApiDoces.Dtos.Category;
+﻿using ApiDoces.Dtos.Category;
+using ApiDoces.Helpers;
+using ApiDoces.Responses;
+using ApiDoces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
@@ -9,11 +11,11 @@ namespace ApiDoces.Controllers;
 public class CategoryController(CategoryService categoryService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryInputDto dto)
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryInputDto dto)    
     {
         await categoryService.CreateCategory(dto);
 
-        return Ok(new { message = "Category created successfully!" });
+        return Ok(ApiResponse.Success(ApiMessages.CategoryCreated));
     }
 
     [HttpGet]
@@ -21,7 +23,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     {
         var categories = await categoryService.GetAllCategories();
 
-        return Ok(categories);
+        return Ok(ApiResponse.Success(categories));
     }
 
     [HttpGet("{id}")]
@@ -30,24 +32,20 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
         var category = await categoryService.GetById(id);
 
         if (category == null)
-            return NotFound(new { message = "Category not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
 
-        return Ok(category);
+        return Ok(ApiResponse.Success(category));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto category)
+    public async Task<IActionResult> UpdateCategory(int id, CategoryInputDto category)
     {
         var updatedCategory = await categoryService.UpdateCategory(id, category);
 
         if (updatedCategory == null)
-            return NotFound(new { message = "Category not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
 
-        return Ok(new
-        {
-            message = "Category updated successfully",
-            category = updatedCategory
-        });
+        return Ok(ApiResponse.Success(updatedCategory, ApiMessages.CategoryUpdated));
     }
 
     [HttpDelete("{id}")]
@@ -56,11 +54,8 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
         var deleted = await categoryService.DeleteCategory(id);
 
         if (!deleted)
-            return NotFound(new { message = "Category not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
 
-        return Ok(new
-        {
-            message = "Category successfully deleted!"
-        });
+        return Ok(ApiResponse.Success(ApiMessages.CategoryDeleted));
     }
 }

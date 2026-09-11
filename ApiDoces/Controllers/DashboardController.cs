@@ -1,4 +1,5 @@
-﻿using ApiDoces.Services;
+﻿using ApiDoces.Responses;
+using ApiDoces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
@@ -12,6 +13,6 @@ public class DashboardController(DashboardService dashboardService) : Controller
     {
         var result = await dashboardService.GetDashboard();
 
-        return Ok(result);
+        return Ok(ApiResponse.Success(result));
     }
 }
