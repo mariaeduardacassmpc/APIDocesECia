@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Dashboard;
+﻿namespace Application.Dtos.Dashboard;
 
 public class TopProductDto
 {

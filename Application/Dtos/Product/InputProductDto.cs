@@ -1,6 +1,6 @@
-﻿namespace ApiDoces.Dtos.Product;
+﻿namespace Application.Dtos.Product;
 
-public class UpdateProductDto
+public class InputProductDto
 {
     public required string Name { get; set; }
     public required string Category { get; set; }
@@ -8,5 +8,5 @@ public class UpdateProductDto
     public required decimal PurchasePrice { get; set; }
     public required decimal SalePrice { get; set; }
     public required int Stock { get; set; }
-    public string? Image { get; set; }
+    public string? Image { get; set; } 
 }

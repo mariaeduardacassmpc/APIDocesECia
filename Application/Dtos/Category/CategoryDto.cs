@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Category;
+﻿namespace Application.Dtos.Category;
 
 public class CategoryDto
 {

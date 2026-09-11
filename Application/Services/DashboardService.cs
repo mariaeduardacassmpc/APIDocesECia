@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Dashboard;
+﻿using Application.Dtos.Dashboard;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

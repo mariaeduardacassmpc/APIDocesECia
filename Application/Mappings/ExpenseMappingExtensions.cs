@@ -1,5 +1,5 @@
-﻿using ApiDoces.Dtos.Expense;
-using Data.Entidades;
+﻿using Application.Dtos.Expense;
+using Data.Entities;
 
 namespace ApiDoces.Mappings;
 
@@ -16,7 +16,7 @@ public static class ExpenseMappingExtensions
         };
     }
 
-    public static Expense ToEntity(this CreateExpenseDto dto)
+    public static Expense ToEntity(this InputExpenseDto dto)
     {
         return new Expense
         {
@@ -24,12 +24,5 @@ public static class ExpenseMappingExtensions
             Value = dto.Value,
             Date = dto.Date
         };
-    }
-
-    public static void UpdateFromDto(this Expense expense, UpdateExpenseDto dto)
-    {
-        expense.Description = dto.Description;
-        expense.Value = dto.Value;
-        expense.Date = dto.Date;
     }
 }

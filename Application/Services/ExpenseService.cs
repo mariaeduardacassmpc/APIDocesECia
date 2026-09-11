@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Expense;
+﻿using Application.Dtos.Expense;
 using ApiDoces.Mappings;
 using Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ namespace ApiDoces.Services;
 
 public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService> logger)
 {
-    public async Task<ExpenseDto> CreateExpense(CreateExpenseDto dto)
+    public async Task<ExpenseDto> CreateExpense(InputExpenseDto dto)
     {
         logger.LogInformation("Criando nova despesa");
 
@@ -50,7 +50,7 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         return expense.ToDto();
     }
 
-    public async Task<ExpenseDto?> UpdateExpense(int id, UpdateExpenseDto dto)
+    public async Task<ExpenseDto?> UpdateExpense(int id, InputExpenseDto dto)
     {
         logger.LogInformation("Atualizando despesa. Id: {ExpenseId}", id);
 
@@ -62,7 +62,6 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
             return null;
         }
 
-        existingExpense.UpdateFromDto(dto);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Despesa atualizada com sucesso. Id: {ExpenseId}", id);

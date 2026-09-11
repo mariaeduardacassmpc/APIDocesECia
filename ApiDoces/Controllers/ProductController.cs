@@ -1,4 +1,4 @@
-using ApiDoces.Dtos.Product;
+using Application.Dtos.Product;
 using ApiDoces.Services;
 using ApiDoces.Services.Report;
 using ApiDoces.Helpers;
@@ -12,7 +12,7 @@ namespace ApiDoces.Controllers;
 public class ProductController(ProductService productService, ProductReportService productReportService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(CreateProductDto dto)
+    public async Task<IActionResult> CreateProduct(InputProductDto dto)
     {
         await productService.CreateProduct(dto);
 
@@ -39,7 +39,7 @@ public class ProductController(ProductService productService, ProductReportServi
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto product)
+    public async Task<IActionResult> UpdateProduct(int id, InputProductDto product)
     {
         var updatedProduct = await productService.UpdateProduct(id, product);
 

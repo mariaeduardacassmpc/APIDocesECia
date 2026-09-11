@@ -1,4 +1,4 @@
-﻿namespace Data.Entidades;
+﻿namespace Data.Entities;
 
 public class Product
 {

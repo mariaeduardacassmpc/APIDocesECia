@@ -1,5 +1,5 @@
 ﻿using ApiDoces.Services;
-using ApiDoces.Dtos.Expense;
+using Application.Dtos.Expense;
 using ApiDoces.Helpers;
 using ApiDoces.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ namespace ApiDoces.Controllers;
 public class ExpenseController(ExpenseService expenseService) : ControllerBase
 {
     [HttpPost("create")]
-    public async Task<IActionResult> CreateExpense(CreateExpenseDto dto)
+    public async Task<IActionResult> CreateExpense(InputExpenseDto dto)
     {
         await expenseService.CreateExpense(dto);
 
@@ -38,7 +38,7 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateExpense(int id, UpdateExpenseDto dto)
+    public async Task<IActionResult> UpdateExpense(int id, InputExpenseDto dto)
     {
         var expense = await expenseService.UpdateExpense(id, dto);
 

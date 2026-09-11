@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Product;
+﻿namespace Application.Dtos.Product;
 
 public class ProductDto
 {

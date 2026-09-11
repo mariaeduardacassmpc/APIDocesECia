@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Category;
+﻿using Application.Dtos.Category;
 using ApiDoces.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;

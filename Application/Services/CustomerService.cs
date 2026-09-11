@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Customer;
+﻿using Application.Dtos.Customer;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ namespace ApiDoces.Services;
 
 public class CustomerService(ApplicationDbContext context, ILogger<CustomerService> logger)
 {
-    public async Task CreateCustomer(CreateCustomerDto dto)
+    public async Task CreateCustomer(InputCustomerDto dto)
     {
         logger.LogInformation("Criando cliente: {CustomerName}", dto.Name);
 
@@ -64,7 +64,7 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         return customer.ToDto();
     }
 
-    public async Task<CustomerDto?> UpdateCustomer(int id, UpdateCustomerDto dto)
+    public async Task<CustomerDto?> UpdateCustomer(int id, InputCustomerDto dto)
     {
         logger.LogInformation("Atualizando cliente. Id: {CustomerId}", id);
 
@@ -76,7 +76,6 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
             return null;
         }
 
-        customer.UpdateFromDto(dto);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Cliente atualizado com sucesso. Id: {CustomerId}", id);

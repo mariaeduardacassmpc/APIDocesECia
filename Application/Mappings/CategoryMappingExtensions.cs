@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Category;
+﻿using Application.Dtos.Category;
 using Data.Entities;
 
 public static class CategoryMappingExtensions

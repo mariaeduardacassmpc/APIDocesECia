@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Customer;
+﻿namespace Application.Dtos.Customer;
 
 public class CustomerDto
 {

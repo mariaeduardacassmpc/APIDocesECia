@@ -1,8 +1,7 @@
-﻿using ApiDoces.Dtos.Sale;
-using ApiDoces.Helpers;
+﻿using ApiDoces.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
-using Application.DTOs.Sales;
+using Application.Dtos.Sale;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
@@ -12,7 +11,7 @@ namespace ApiDoces.Controllers;
 public class SalesController(SaleService salesService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateSale(CreateSaleDto sale)
+    public async Task<IActionResult> CreateSale(InputSaleDto sale)
     {
         if (sale == null)
             return BadRequest(ApiResponse.BadRequest(ApiMessages.InvalidData));
@@ -42,7 +41,7 @@ public class SalesController(SaleService salesService) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSale(int id, UpdateSaleDto sale)
+    public async Task<IActionResult> UpdateSale(int id, InputSaleDto sale)
     {
         var updateSale = await salesService.UpdateSale(id, sale);
 

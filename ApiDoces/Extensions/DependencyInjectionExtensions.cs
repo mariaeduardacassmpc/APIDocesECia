@@ -9,8 +9,7 @@ namespace ApiDoces.Extensions;
 
 public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(
-        this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<ProductService>();
         services.AddScoped<CustomerService>();
@@ -19,7 +18,6 @@ public static class DependencyInjectionExtensions
         services.AddScoped<UserService>();
         services.AddScoped<DashboardService>();
         services.AddScoped<SaleService>();
-
         services.AddScoped<ExcelReportService>();
         services.AddScoped<CustomerReportService>();
         services.AddScoped<ProductReportService>();

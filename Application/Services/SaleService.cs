@@ -1,6 +1,5 @@
-﻿using ApiDoces.Dtos.Sale;
+﻿using Application.Dtos.Sale;
 using ApiDoces.Mappings;
-using Application.DTOs.Sales;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,7 +8,7 @@ namespace ApiDoces.Services;
 
 public class SaleService(ApplicationDbContext context, ILogger<SaleService> logger)
 {
-    public async Task CreateSales(CreateSaleDto dto)
+    public async Task CreateSales(InputSaleDto dto)
     {
         logger.LogInformation("Criando nova venda");
 
@@ -80,7 +79,7 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         return sale.ToDto();
     }
 
-    public async Task<SaleDto?> UpdateSale(int id, UpdateSaleDto dto)
+    public async Task<SaleDto?> UpdateSale(int id, InputSaleDto dto)
     {
         logger.LogInformation("Atualizando venda. Id: {SaleId}", id);
 
@@ -91,8 +90,6 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
             logger.LogWarning("Venda não encontrada para atualização. Id: {SaleId}", id);
             return null;
         }
-
-        sale.UpdateFromDto(dto);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Venda atualizada com sucesso. Id: {SaleId}", id);

@@ -1,5 +1,5 @@
 ﻿using Data;
-using Data.Entidades;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiDoces.Services.Report;

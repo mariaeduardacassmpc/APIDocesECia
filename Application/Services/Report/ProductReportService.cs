@@ -1,6 +1,6 @@
 ﻿using Data;
 using Microsoft.EntityFrameworkCore;
-using Data.Entidades;
+using Data.Entities;
 
 namespace ApiDoces.Services.Report;
 public class ProductReportService(ApplicationDbContext context, ExcelReportService excelReportService)

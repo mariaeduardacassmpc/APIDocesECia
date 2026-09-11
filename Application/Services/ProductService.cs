@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Product;
+﻿using Application.Dtos.Product;
 using ApiDoces.Mappings;
 using Application.Interfaces;
 using Data;
@@ -9,7 +9,7 @@ namespace ApiDoces.Services;
 
 public class ProductService(ApplicationDbContext context, IImageStorage imageStorage, ILogger<ProductService> logger)
 {
-    public async Task<ProductDto> CreateProduct(CreateProductDto dto)
+    public async Task<ProductDto> CreateProduct(InputProductDto dto)
     {
         logger.LogInformation("Criando produto: {ProductName}", dto.Name);
 
@@ -70,7 +70,7 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return product.ToDto();
     }
 
-    public async Task<ProductDto?> UpdateProduct(int id, UpdateProductDto dto)
+    public async Task<ProductDto?> UpdateProduct(int id, InputProductDto dto)
     {
         logger.LogInformation("Atualizando produto. Id: {ProductId}", id);
 
@@ -81,8 +81,6 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
             logger.LogWarning("Produto não encontrado para atualização. Id: {ProductId}", id);
             return null;
         }
-
-        existingProduct.UpdateFromDto(dto);
 
         if (!string.IsNullOrEmpty(dto.Image) && dto.Image.StartsWith("data:image"))
             existingProduct.Image = imageStorage.SaveFromBase64(dto.Image);

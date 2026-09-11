@@ -1,5 +1,5 @@
-﻿using ApiDoces.Dtos.Customer;
-using Data.Entidades;
+﻿using Application.Dtos.Customer;
+using Data.Entities;
 
 public static class CustomerMappingExtensions
 {
@@ -18,7 +18,7 @@ public static class CustomerMappingExtensions
         };
     }
 
-    public static Customer ToEntity(this CreateCustomerDto dto)
+    public static Customer ToEntity(this InputCustomerDto dto)
     {
         return new Customer
         {
@@ -31,15 +31,4 @@ public static class CustomerMappingExtensions
             Active = true
         };
     }
-
-    public static void UpdateFromDto(this Customer customer, UpdateCustomerDto dto)
-    {
-        customer.Name = dto.Name;
-        customer.Phone = dto.Phone;
-        customer.Address = dto.Address;
-        customer.City = dto.City;
-        customer.Email = dto.Email;
-        customer.Obs = dto.Obs;
-    }
-
 }

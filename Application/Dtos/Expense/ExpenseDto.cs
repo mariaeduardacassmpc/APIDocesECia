@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Expense;
+﻿namespace Application.Dtos.Expense;
 
 public class ExpenseDto
 {

@@ -1,5 +1,5 @@
-﻿using ApiDoces.Dtos.Product;
-using Data.Entidades;
+﻿using Application.Dtos.Product;
+using Data.Entities;
 
 namespace ApiDoces.Mappings;
 
@@ -20,7 +20,7 @@ public static class ProductMappingExtensions
         };
     }
 
-    public static Product ToEntity(this CreateProductDto dto)
+    public static Product ToEntity(this InputProductDto dto)
     {
         return new Product
         {
@@ -32,15 +32,5 @@ public static class ProductMappingExtensions
             Stock = dto.Stock,
             Image = dto.Image ?? string.Empty
         };
-    }
-
-    public static void UpdateFromDto(this Product product, UpdateProductDto dto)
-    {
-        product.Name = dto.Name;
-        product.Category = dto.Category;
-        product.Description = dto.Description;
-        product.PurchasePrice = dto.PurchasePrice;
-        product.SalePrice = dto.SalePrice;
-        product.Stock = dto.Stock;
     }
 }

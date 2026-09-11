@@ -1,6 +1,6 @@
-﻿namespace ApiDoces.Dtos.Customer;
+﻿namespace Application.Dtos.Customer;
 
-public class CreateCustomerDto
+public class InputCustomerDto
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;

@@ -1,5 +1,5 @@
 ﻿using ApiDoces.Services;
-using ApiDoces.Dtos.Customer;
+using Application.Dtos.Customer;
 using ApiDoces.Services.Report;
 using ApiDoces.Helpers;
 using ApiDoces.Responses;
@@ -12,7 +12,7 @@ namespace ApiDoces.Controllers;
 public class CustomerController(CustomerService customerService, CustomerReportService customerReportService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCustomer(CreateCustomerDto dto)
+    public async Task<IActionResult> CreateCustomer(InputCustomerDto dto)
     {
         await customerService.CreateCustomer(dto);
 
@@ -39,7 +39,7 @@ public class CustomerController(CustomerService customerService, CustomerReportS
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCustomer(int id, UpdateCustomerDto dto)
+    public async Task<IActionResult> UpdateCustomer(int id, InputCustomerDto dto)
     {
         var customer = await customerService.UpdateCustomer(id, dto);
 

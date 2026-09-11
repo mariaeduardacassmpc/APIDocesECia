@@ -1,6 +1,6 @@
-﻿namespace ApiDoces.Dtos.Expense;
+﻿namespace Application.Dtos.Expense;
 
-public class CreateExpenseDto
+public class InputExpenseDto
 {
     public string Description { get; set; } = string.Empty;
     public decimal Value { get; set; }

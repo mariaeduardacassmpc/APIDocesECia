@@ -1,4 +1,4 @@
-﻿using ApiDoces.Dtos.Category;
+﻿using Application.Dtos.Category;
 using FluentValidation;
 
 public class CategoryValidator : AbstractValidator<CategoryInputDto>
