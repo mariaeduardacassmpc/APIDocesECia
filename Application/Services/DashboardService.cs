@@ -1,13 +1,16 @@
-﻿using Data;
-using ApiDoces.Dtos.Dashboard;
+﻿using ApiDoces.Dtos.Dashboard;
+using Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ApiDoces.Services;
 
-public class DashboardService(ApplicationDbContext context)
+public class DashboardService(ApplicationDbContext context, ILogger<DashboardService> logger)
 {
     public async Task<DashboardDto> GetDashboard()
     {
+        logger.LogInformation("Buscando dados do dashboard");
+
         var today = DateTime.Today;
         var tomorrow = today.AddDays(1);
 
@@ -15,11 +18,11 @@ public class DashboardService(ApplicationDbContext context)
         var totalCustomers = await context.Customer.CountAsync(c => c.Active);
 
         var salesToday = await context.Sale
-         .CountAsync(x => x.SaleDate >= today && x.SaleDate < tomorrow);
+            .CountAsync(x => x.SaleDate >= today && x.SaleDate < tomorrow);
 
         var revenueToday = await context.Sale
-         .Where(x => x.SaleDate >= today && x.SaleDate < tomorrow)
-         .SumAsync(x => (decimal?)x.TotalAmount) ?? 0m;
+            .Where(x => x.SaleDate >= today && x.SaleDate < tomorrow)
+            .SumAsync(x => (decimal?)x.TotalAmount) ?? 0m;
 
         var salesByPaymentMethod = await context.Sale
             .GroupBy(x => x.PaymentMethod)
@@ -42,7 +45,7 @@ public class DashboardService(ApplicationDbContext context)
             .Take(5)
             .ToListAsync();
 
-        return new DashboardDto
+        var dashboard = new DashboardDto
         {
             TotalProducts = totalProducts,
             TotalCustomers = totalCustomers,
@@ -51,5 +54,11 @@ public class DashboardService(ApplicationDbContext context)
             SalesByPaymentMethod = salesByPaymentMethod,
             TopSellingProducts = topSellingProducts
         };
+
+        logger.LogInformation(
+            "Dashboard carregado. Produtos: {Products}, Clientes: {Customers}, Vendas hoje: {SalesToday}, Receita hoje: {RevenueToday}",
+            totalProducts, totalCustomers, salesToday, revenueToday);
+
+        return dashboard;
     }
 }

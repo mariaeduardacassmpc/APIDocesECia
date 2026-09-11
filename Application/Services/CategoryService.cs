@@ -60,8 +60,6 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
             return null;
         }
 
-        existingCategory.UpdateFromDto(dto);
-
         await context.SaveChangesAsync();
 
         logger.LogInformation("Categoria atualizada com sucesso. Id: {CategoryId}", id);

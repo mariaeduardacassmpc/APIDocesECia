@@ -1,6 +1,8 @@
 ﻿using ApiDoces.Services;
 using ApiDoces.Dtos.Customer;
 using ApiDoces.Services.Report;
+using ApiDoces.Helpers;
+using ApiDoces.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
@@ -14,7 +16,7 @@ public class CustomerController(CustomerService customerService, CustomerReportS
     {
         await customerService.CreateCustomer(dto);
 
-        return Ok(new { message = "Customer created successfully!" });
+        return Ok(ApiResponse.Success(ApiMessages.CustomerCreated));
     }
 
     [HttpGet]
@@ -22,7 +24,7 @@ public class CustomerController(CustomerService customerService, CustomerReportS
     {
         var customers = await customerService.GetAllCustomers();
 
-        return Ok(customers);
+        return Ok(ApiResponse.Success(customers));
     }
 
     [HttpGet("{id}")]
@@ -31,9 +33,9 @@ public class CustomerController(CustomerService customerService, CustomerReportS
         var customer = await customerService.GetById(id);
 
         if (customer == null)
-            return NotFound(new { message = "Customer not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CustomerNotFound));
 
-        return Ok(customer);
+        return Ok(ApiResponse.Success(customer));
     }
 
     [HttpPut("{id}")]
@@ -42,17 +44,17 @@ public class CustomerController(CustomerService customerService, CustomerReportS
         var customer = await customerService.UpdateCustomer(id, dto);
 
         if (customer == null)
-            return NotFound(new { message = "Customer not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CustomerNotFound));
 
-        return Ok(customer);
+        return Ok(ApiResponse.Success(customer, ApiMessages.CustomerUpdated));
     }
 
     [HttpGet("for-sale")]
     public async Task<ActionResult<IEnumerable<CustomerForSaleDto>>> GetCustomersForSale()
     {
         var customers = await customerService.GetCustomersForSale();
-        
-        return Ok(customers);
+
+        return Ok(ApiResponse.Success(customers));
     }
 
     [HttpPatch("{id}/active")]
@@ -61,9 +63,9 @@ public class CustomerController(CustomerService customerService, CustomerReportS
         var customer = await customerService.ToggleActive(id);
 
         if (customer == null)
-            return NotFound(new { message = "Customer not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.CustomerNotFound));
 
-        return Ok(customer);
+        return Ok(ApiResponse.Success(customer));
     }
 
     [HttpGet("report")]
@@ -73,7 +75,6 @@ public class CustomerController(CustomerService customerService, CustomerReportS
 
         return File(file,
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"customer-report-{DateTime.Now:yyyyMMddHHmmss}.xlsx"
-        );
+            $"customer-report-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 }

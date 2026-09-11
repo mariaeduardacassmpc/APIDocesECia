@@ -1,4 +1,6 @@
-﻿using Application.Dtos.Auth;
+﻿using ApiDoces.Helpers;
+using ApiDoces.Responses;
+using Application.Dtos.Auth;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +18,8 @@ public class AuthController(AuthService authService) : ControllerBase
         var result = await authService.Login(dto);
 
         if (result == null)
-            return Unauthorized(new { mensagem = "E-mail ou senha inválidos." });
+            return Unauthorized(ApiResponse.BadRequest(ApiMessages.InvalidCredentials));
 
-        return Ok(result);
+        return Ok(ApiResponse.Success(result));
     }
 }

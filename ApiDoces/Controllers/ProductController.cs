@@ -1,6 +1,8 @@
 using ApiDoces.Dtos.Product;
 using ApiDoces.Services;
 using ApiDoces.Services.Report;
+using ApiDoces.Helpers;
+using ApiDoces.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
@@ -13,27 +15,27 @@ public class ProductController(ProductService productService, ProductReportServi
     public async Task<IActionResult> CreateProduct(CreateProductDto dto)
     {
         await productService.CreateProduct(dto);
-        return Ok("Product created successfully!");
+
+        return Ok(ApiResponse.Success(ApiMessages.ProductCreated));
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllProducts()
     {
         var products = await productService.GetAllProducts();
-        if (products == null)
-            return NotFound(new { mensagem = "Products not found" });
 
-        return Ok(products);
+        return Ok(ApiResponse.Success(products));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var product = await productService.GetById(id);
-        if (product == null)
-            return NotFound(new { mensagem = "Product not found" });
 
-        return Ok(product);
+        if (product == null)
+            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
+
+        return Ok(ApiResponse.Success(product));
     }
 
     [HttpPut("{id}")]
@@ -42,19 +44,20 @@ public class ProductController(ProductService productService, ProductReportServi
         var updatedProduct = await productService.UpdateProduct(id, product);
 
         if (updatedProduct == null)
-            return NotFound(new { message = "Product not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
 
-        return Ok(new { message = "Product updated successfully", product = updatedProduct });
+        return Ok(ApiResponse.Success(updatedProduct, ApiMessages.ProductUpdated));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var deleted = await productService.DeleteProduct(id);
-        if (!deleted)
-            return NotFound(new { message = "Product not found" });
 
-        return Ok(new { message = "Product deleted successfully!" });
+        if (!deleted)
+            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
+
+        return Ok(ApiResponse.Success(ApiMessages.ProductDeleted));
     }
 
     [HttpGet("report")]
@@ -65,7 +68,6 @@ public class ProductController(ProductService productService, ProductReportServi
         return File(
             file,
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx"
-        );
+            $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 }

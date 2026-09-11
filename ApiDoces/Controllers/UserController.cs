@@ -1,5 +1,7 @@
 ﻿using Application.Dtos.User;
 using Application.Services;
+using ApiDoces.Helpers;
+using ApiDoces.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,68 +9,58 @@ namespace ApiDoces.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
-public class UserController(UserService UserService) : ControllerBase
+public class UserController(UserService userService) : ControllerBase
 {
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> CreateUser(CreateUserDto user)
+    public async Task<IActionResult> CreateUser(InputUserDto user)
     {
         if (user == null)
-            return BadRequest(new { mensagem = "User invalid" });
+            return BadRequest(ApiResponse.BadRequest(ApiMessages.InvalidData));
 
-        await UserService.CreateUser(user);
+        await userService.CreateUser(user);
 
-        return Ok(new
-        {
-            mensagem = "User created successfully!"
-        });
+        return Ok(ApiResponse.Success(ApiMessages.UserCreated));
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var users = await UserService.GetAllUsers();
-        return Ok(users);
+        var users = await userService.GetAllUsers();
+
+        return Ok(ApiResponse.Success(users));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await UserService.GetById(id);
+        var user = await userService.GetById(id);
 
         if (user == null)
-            return NotFound(new { mensagem = "User not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
 
-        return Ok(user);
+        return Ok(ApiResponse.Success(user));
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, UpdateUserDto user)
     {
-        var updatedUser = await UserService.UpdateUser(id, user);
+        var updatedUser = await userService.UpdateUser(id, user);
 
         if (updatedUser == null)
-            return NotFound(new { mensagem = "User not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
 
-        return Ok(new
-        {
-            mensagem = "User updated successfully",
-            user = updatedUser
-        });
+        return Ok(ApiResponse.Success(updatedUser, ApiMessages.UserUpdated));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var deleted = await UserService.DeleteUser(id);
+        var deleted = await userService.DeleteUser(id);
 
         if (!deleted)
-            return NotFound(new { mensagem = "User not found" });
+            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
 
-        return Ok(new
-        {
-            mensagem = "User successfully deleted!"
-        });
+        return Ok(ApiResponse.Success(ApiMessages.UserDeleted));
     }
 }
