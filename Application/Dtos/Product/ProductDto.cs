@@ -10,4 +10,5 @@ public class ProductDto
     public decimal SalePrice { get; set; }
     public int Stock { get; set; }
     public string Image { get; set; } = string.Empty;
+    public bool Active { get; set; }
 }

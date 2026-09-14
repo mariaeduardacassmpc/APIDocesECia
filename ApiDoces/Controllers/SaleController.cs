@@ -2,13 +2,14 @@
 using ApiDoces.Responses;
 using ApiDoces.Services;
 using Application.Dtos.Sale;
+using Application.Services.Report;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SalesController(SaleService salesService) : ControllerBase
+public class SalesController(SaleService salesService, SaleReportService saleReport) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateSale(InputSaleDto sale)
@@ -48,5 +49,16 @@ public class SalesController(SaleService salesService) : ControllerBase
         if (updateSale == null)
             return NotFound(ApiResponse.NotFound(ApiMessages.SaleNotFound));
         return Ok(ApiResponse.Success(updateSale, ApiMessages.SaleUpdated));
+    }
+
+    [HttpGet("report")]
+    public async Task<IActionResult> GetSaleReport()
+    {
+        var file = await saleReport.GenerateSalesReport();
+
+        return File(
+            file,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 }

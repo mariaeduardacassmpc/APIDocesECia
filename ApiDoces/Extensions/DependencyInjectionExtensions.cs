@@ -2,6 +2,7 @@
 using ApiDoces.Services.Report;
 using Application.Interfaces;
 using Application.Services;
+using Application.Services.Report;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -21,6 +22,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<ExcelReportService>();
         services.AddScoped<CustomerReportService>();
         services.AddScoped<ProductReportService>();
+        services.AddScoped<SaleReportService>();
+
 
         services.AddScoped<IImageStorage, FileSystemImageStorage>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

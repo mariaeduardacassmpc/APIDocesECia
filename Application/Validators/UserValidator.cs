@@ -15,10 +15,19 @@ public class UserValidator : AbstractValidator<InputUserDto>
             .WithMessage("E-mai deve ter no máximo 50 caracteres.");
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Senha é obrigatória.")
-            .MinimumLength(6)
-                .WithMessage("Senha deve ter no mínimo 6 caracteres.")
-            .MaximumLength(100)
-                .WithMessage("Senha deve ter no máximo 100 caracteres.");
+            .NotEmpty()
+            .WithMessage("Senha é obrigatória.")
+            .MinimumLength(8)
+            .WithMessage("Senha deve ter no mínimo 8 caracteres.")
+            .MaximumLength(50)
+            .WithMessage("Senha deve ter no máximo 50 caracteres.")
+            .Matches("[A-Z]")
+            .WithMessage("Senha deve conter pelo menos uma letra maiúscula.")
+            .Matches("[a-z]")
+            .WithMessage("Senha deve conter pelo menos uma letra minúscula.")
+            .Matches("[0-9]")
+            .WithMessage("Senha deve conter pelo menos um número.")
+            .Matches("[^a-zA-Z0-9]")
+            .WithMessage("Senha deve conter pelo menos um caractere especial.");
     }
 }

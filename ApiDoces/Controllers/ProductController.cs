@@ -49,15 +49,15 @@ public class ProductController(ProductService productService, ProductReportServi
         return Ok(ApiResponse.Success(updatedProduct, ApiMessages.ProductUpdated));
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(int id)
+    [HttpPatch("{id}/active")]
+    public async Task<IActionResult> ToggleActive(int id)
     {
-        var deleted = await productService.DeleteProduct(id);
+        var product = await productService.ToggleActive(id);
 
-        if (!deleted)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
+        if (product == null)
+            return NotFound(ApiResponse.NotFound(ApiMessages.CustomerNotFound));
 
-        return Ok(ApiResponse.Success(ApiMessages.ProductDeleted));
+        return Ok(ApiResponse.Success(product));
     }
 
     [HttpGet("report")]

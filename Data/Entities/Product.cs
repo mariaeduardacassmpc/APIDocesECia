@@ -10,4 +10,5 @@ public class Product
     public required decimal SalePrice { get; set; } 
     public required decimal PurchasePrice { get; set; }
     public required int Stock { get; set; }
+    public bool Active { get; set; } = true;
 }

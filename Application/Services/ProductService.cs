@@ -1,5 +1,6 @@
-﻿using Application.Dtos.Product;
-using ApiDoces.Mappings;
+﻿using ApiDoces.Mappings;
+using Application.Dtos.Customer;
+using Application.Dtos.Product;
 using Application.Interfaces;
 using Data;
 using Microsoft.EntityFrameworkCore;
@@ -92,23 +93,24 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return existingProduct.ToDto();
     }
 
-    public async Task<bool> DeleteProduct(int id)
+    public async Task<ProductDto?> ToggleActive(int id)
     {
-        logger.LogInformation("Excluindo produto. Id: {ProductId}", id);
+        logger.LogInformation("Alterando status do produto. Id: {ProductId}", id);
 
         var product = await context.Product.FindAsync(id);
 
         if (product == null)
         {
-            logger.LogWarning("Produto não encontrado para exclusão. Id: {ProductId}", id);
-            return false;
+            logger.LogWarning("Produto não encontrado para alteração de status. Id: {ProductId}", id);
+            return null;
         }
 
-        context.Product.Remove(product);
+        product.Active = !product.Active;
+
         await context.SaveChangesAsync();
 
-        logger.LogInformation("Produto excluído com sucesso. Id: {ProductId}", id);
+        logger.LogInformation("Status do produto alterado. Id: {ProductId}, Ativo: {Active}", id, product.Active);
 
-        return true;
+        return product.ToDto();
     }
 }
