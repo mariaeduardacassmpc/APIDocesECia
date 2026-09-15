@@ -9,4 +9,5 @@ public class InputProductDto
     public required decimal SalePrice { get; set; }
     public required int Stock { get; set; }
     public string? Image { get; set; } 
+    public bool Active { get; set; }
 }

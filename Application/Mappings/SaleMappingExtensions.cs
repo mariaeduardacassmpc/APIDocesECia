@@ -60,6 +60,15 @@ public static class SaleMappingExtensions
         };
     }
 
+    public static void UpdateEntity(this InputSaleDto dto, Sale sale)
+    {
+        sale.Description = dto.Description;
+        sale.CustomerId = dto.CustomerId;
+        sale.PaymentMethod = dto.PaymentMethod;
+        sale.SaleDate = dto.SaleDate;
+        sale.TotalAmount = dto.Items.Sum(i => i.Quantity * i.UnitPrice);
+    }
+
     public static SaleListDto ToListDto(this Sale sale)
     {
         return new SaleListDto

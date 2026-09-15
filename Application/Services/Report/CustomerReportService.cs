@@ -14,12 +14,12 @@ public class CustomerReportService(ApplicationDbContext context, ExcelReportServ
             "Customers",
             customers,
             new ReportColumn<Customer>("ID", c => c.CustomerId),
-            new ReportColumn<Customer>("Name", c => c.Name),
-            new ReportColumn<Customer>("Phone", c => c.Phone),
-            new ReportColumn<Customer>("City", c => c.City),
-            new ReportColumn<Customer>("Address", c => c.Address),
+            new ReportColumn<Customer>("Nome", c => c.Name),
+            new ReportColumn<Customer>("Telefone", c => c.Phone),
+            new ReportColumn<Customer>("Cidade", c => c.City),
+            new ReportColumn<Customer>("Endereço", c => c.Address),
             new ReportColumn<Customer>("Email", c => c.Email),
-            new ReportColumn<Customer>("Active", c => c.Active)
+            new ReportColumn<Customer>("Ativo", c => c.Active)
         );
     }
 }

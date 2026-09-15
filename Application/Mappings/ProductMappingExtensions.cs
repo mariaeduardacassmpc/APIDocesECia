@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Product;
+﻿using Application.Dtos.Customer;
+using Application.Dtos.Product;
 using Data.Entities;
 
 namespace ApiDoces.Mappings;
@@ -32,5 +33,16 @@ public static class ProductMappingExtensions
             Stock = dto.Stock,
             Image = dto.Image ?? string.Empty
         };
+    }
+
+    public static void UpdateEntity(this InputProductDto dto, Product product)
+    {
+        product.Name = dto.Name;
+        product.Description = dto.Description;
+        product.Category = dto.Category;
+        product.SalePrice = dto.SalePrice;
+        product.PurchasePrice = dto.PurchasePrice;
+        product.Stock = dto.Stock;
+        product.Active = dto.Active;
     }
 }

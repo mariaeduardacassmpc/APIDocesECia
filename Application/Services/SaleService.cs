@@ -90,6 +90,15 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
             logger.LogWarning("Venda não encontrada para atualização. Id: {SaleId}", id);
             return null;
         }
+
+        dto.UpdateEntity(sale);
+        
+        context.SaleItem.RemoveRange(sale.Items);
+
+        sale.Items = dto.Items
+            .Select(item => item.ToEntity())
+            .ToList();
+
         await context.SaveChangesAsync();
 
         logger.LogInformation("Venda atualizada com sucesso. Id: {SaleId}", id);

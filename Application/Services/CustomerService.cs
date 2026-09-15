@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Customer;
+﻿using ApiDoces.Mappings;
+using Application.Dtos.Customer;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -75,6 +76,8 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
             logger.LogWarning("Cliente não encontrado para atualização. Id: {CustomerId}", id);
             return null;
         }
+
+        dto.UpdateEntity(customer);
 
         await context.SaveChangesAsync();
 

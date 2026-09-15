@@ -31,4 +31,15 @@ public static class CustomerMappingExtensions
             Active = true
         };
     }
+
+    public static void UpdateEntity(this InputCustomerDto dto, Customer customer)
+    {
+        customer.Name = dto.Name;
+        customer.Phone = dto.Phone;
+        customer.Address = dto.Address;
+        customer.City = dto.City;
+        customer.Email = dto.Email;
+        customer.Obs = dto.Obs;
+        customer.Active = dto.Active;
+    }
 }

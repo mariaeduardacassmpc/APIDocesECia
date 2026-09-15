@@ -83,6 +83,8 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
             return null;
         }
 
+        dto.UpdateEntity(existingProduct);
+
         if (!string.IsNullOrEmpty(dto.Image) && dto.Image.StartsWith("data:image"))
             existingProduct.Image = imageStorage.SaveFromBase64(dto.Image);
 
