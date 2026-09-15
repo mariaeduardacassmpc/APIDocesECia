@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiDoces.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public class AuthController(AuthService authService) : ControllerBase
 {
-    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
@@ -22,4 +22,27 @@ public class AuthController(AuthService authService) : ControllerBase
 
         return Ok(ApiResponse.Success(result));
     }
+
+    //[AllowAnonymous]
+    //[HttpPost("forgot-password")]
+    //public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+    //{
+    //    await authService.ForgotPassword(dto);
+
+    //    return Ok(ApiResponse.Success(
+    //        "Se o e-mail estiver cadastrado, as instruções de recuperação serão enviadas."
+    //    ));
+    //}
+
+    //[AllowAnonymous]
+    //[HttpPost("reset-password")]
+    //public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+    //{
+    //    var result = await authService.ResetPassword(dto);
+
+    //    if (!result)
+    //        return BadRequest(ApiResponse.BadRequest("Token inválido ou expirado."));
+
+    //    return Ok(ApiResponse.Success("Senha redefinida com sucesso."));
+    //}
 }

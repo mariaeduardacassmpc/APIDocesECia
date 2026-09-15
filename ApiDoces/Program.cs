@@ -48,12 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-});
+builder.Services.AddAuthorization();
 
 builder.Services.AddApplicationServices(); 
 builder.Services.AddControllers();
@@ -79,11 +74,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.RoutePrefix = "swagger";
+});
 
 app.UseCors("AllowFrontend");
 
@@ -95,6 +90,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Redirect("/swagger"))
+   .AllowAnonymous()
    .ExcludeFromDescription();
 
 app.MapControllers();

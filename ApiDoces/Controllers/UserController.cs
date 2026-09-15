@@ -24,6 +24,7 @@ public class UserController(UserService userService) : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var users = await userService.GetAllUsers();
@@ -32,6 +33,7 @@ public class UserController(UserService userService) : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var user = await userService.GetById(id);
@@ -43,6 +45,7 @@ public class UserController(UserService userService) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateUser(int id, InputUserDto user)
     {
         var updatedUser = await userService.UpdateUser(id, user);
@@ -54,6 +57,7 @@ public class UserController(UserService userService) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var deleted = await userService.DeleteUser(id);

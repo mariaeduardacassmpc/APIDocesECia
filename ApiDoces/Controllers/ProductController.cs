@@ -1,13 +1,15 @@
-using Application.Dtos.Product;
-using ApiDoces.Services;
-using ApiDoces.Services.Report;
 using ApiDoces.Helpers;
 using ApiDoces.Responses;
+using ApiDoces.Services;
+using ApiDoces.Services.Report;
+using Application.Dtos.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ProductController(ProductService productService, ProductReportService productReportService) : ControllerBase
 {

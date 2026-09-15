@@ -1,12 +1,14 @@
-﻿using Application.Dtos.Category;
-using ApiDoces.Helpers;
+﻿using ApiDoces.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
+using Application.Dtos.Category;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class CategoryController(CategoryService categoryService) : ControllerBase
 {

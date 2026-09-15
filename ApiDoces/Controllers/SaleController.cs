@@ -3,11 +3,13 @@ using ApiDoces.Responses;
 using ApiDoces.Services;
 using Application.Dtos.Sale;
 using Application.Services.Report;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class SalesController(SaleService salesService, SaleReportService saleReport) : ControllerBase
 {

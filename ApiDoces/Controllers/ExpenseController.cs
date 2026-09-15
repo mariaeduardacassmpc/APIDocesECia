@@ -1,12 +1,14 @@
-﻿using ApiDoces.Services;
-using Application.Dtos.Expense;
-using ApiDoces.Helpers;
+﻿using ApiDoces.Helpers;
 using ApiDoces.Responses;
+using ApiDoces.Services;
+using Application.Dtos.Expense;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiDoces.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ExpenseController(ExpenseService expenseService) : ControllerBase
 {
