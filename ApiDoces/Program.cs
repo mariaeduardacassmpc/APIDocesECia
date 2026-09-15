@@ -23,9 +23,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:8080")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+           .WithOrigins(
+                "http://localhost:8080",
+                "https://adm-doces-e-cia.vercel.app")
+           .AllowAnyHeader()
+           .AllowAnyMethod();
     });
 });
 
