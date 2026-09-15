@@ -31,7 +31,9 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
     {
         logger.LogInformation("Buscando todos os produtos");
 
-        var products = await context.Product.ToListAsync();
+        var products = await context.Product
+            .Include(p => p.Category)
+            .ToListAsync();
 
         logger.LogInformation("Foram encontrados {Count} produtos", products.Count);
 
@@ -60,8 +62,10 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
     {
         logger.LogInformation("Buscando produto por Id: {ProductId}", id);
 
-        var product = await context.Product.FindAsync(id);
-
+        var product = await context.Product
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.ProductId == id);
+            
         if (product == null)
         {
             logger.LogWarning("Produto não encontrado. Id: {ProductId}", id);
@@ -95,24 +99,28 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return existingProduct.ToDto();
     }
 
-    public async Task<ProductDto?> ToggleActive(int id)
+    public async Task<CustomerDto?> ToggleActive(int id)
     {
-        logger.LogInformation("Alterando status do produto. Id: {ProductId}", id);
+        logger.LogInformation("Alterando status do cliente. Id: {CustomerId}", id);
 
-        var product = await context.Product.FindAsync(id);
+        var customer = await context.Customer.FindAsync(id);
 
-        if (product == null)
+        if (customer == null)
         {
-            logger.LogWarning("Produto não encontrado para alteração de status. Id: {ProductId}", id);
+            logger.LogWarning("Cliente não encontrado para alteração de status. Id: {CustomerId}", id);
             return null;
         }
 
-        product.Active = !product.Active;
+        customer.Active = !customer.Active;
 
         await context.SaveChangesAsync();
 
-        logger.LogInformation("Status do produto alterado. Id: {ProductId}, Ativo: {Active}", id, product.Active);
+        logger.LogInformation(
+            "Status do cliente alterado. Id: {CustomerId}, Ativo: {Active}",
+            id,
+            customer.Active
+        );
 
-        return product.ToDto();
+        return customer.ToDto();
     }
 }

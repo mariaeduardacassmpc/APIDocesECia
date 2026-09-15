@@ -10,9 +10,9 @@ public class CreateProductDtoValidator : AbstractValidator<InputProductDto>
             .NotEmpty().WithMessage("O nome é obrigatório.")
             .MaximumLength(150).WithMessage("O nome deve ter no máximo 150 caracteres.");
 
-        RuleFor(x => x.Category)
-            .NotEmpty().WithMessage("A categoria é obrigatória.")
-            .MaximumLength(100).WithMessage("A categoria deve ter no máximo 100 caracteres.");
+        RuleFor(x => x.CategoryId)
+             .GreaterThan(0)
+             .WithMessage("A categoria é obrigatória.");
 
         RuleFor(x => x.Description)
             .MaximumLength(500).WithMessage("A descrição deve ter no máximo 500 caracteres.");

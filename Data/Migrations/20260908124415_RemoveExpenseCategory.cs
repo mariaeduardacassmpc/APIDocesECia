@@ -10,28 +10,38 @@ namespace Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Expense_Category_CategoryId",
-                table: "Expense");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Expense_CategoryId",
-                table: "Expense");
-
             migrationBuilder.DropColumn(
+                name: "Category",
+                table: "Product");
+
+            migrationBuilder.AddColumn<int>(
                 name: "CategoryId",
-                table: "Expense");
+                table: "Product",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_CategoryId",
+                table: "Product",
+                column: "CategoryId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Product_Category_CategoryId",
+                table: "Product",
+                column: "CategoryId",
+                principalTable: "Category",
+                principalColumn: "CategoryId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "CategoryId",
-                table: "Expense",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
+                 name: "CategoryId",
+                 table: "Product",
+                 type: "int",
+                 nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Expense_CategoryId",

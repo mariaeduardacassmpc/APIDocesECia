@@ -69,6 +69,12 @@ namespace Data
             modelBuilder.Entity<Expense>()
                 .Property(e => e.Value)
                 .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
