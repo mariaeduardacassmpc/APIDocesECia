@@ -1,5 +1,4 @@
-
-API RESTful desenvolvida para gerenciamento de uma pequena empresa de doces, centralizando o controle de **produtos, clientes, vendas e despesas** em uma aplicação web.
+Projeto desenvolvido para gerenciamento de uma pequena empresa de doces, centralizando o controle de **produtos, clientes, vendas e despesas** em uma aplicação web.
 O projeto foi desenvolvido com foco em **backend utilizando C# e .NET**, aplicando conceitos de organização em camadas, autenticação, persistência de dados e desenvolvimento de APIs RESTful.
 
 ## Sobre o projeto
