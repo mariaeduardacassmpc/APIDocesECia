@@ -104,6 +104,14 @@ O projeto utiliza **FluentValidation** para centralizar regras de validação do
 Exemplo de fluxo:
 Request > DTO > Validação > Service > Database
 
+### Testes
+
+O projeto possui testes unitários para os principais serviços da aplicação, utilizando:
+
+- **xUnit** — framework para execução dos testes;
+- **Moq** — criação de mocks para dependências;
+- **EF Core InMemory** — banco em memória para testar operações com o contexto.
+
 
 ## Objetivos técnicos
 
