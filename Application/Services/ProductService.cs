@@ -1,5 +1,4 @@
 ﻿using ApiDoces.Mappings;
-using Application.Dtos.Customer;
 using Application.Dtos.Product;
 using Application.Interfaces;
 using Data;
@@ -99,28 +98,23 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return existingProduct.ToDto();
     }
 
-    public async Task<CustomerDto?> ToggleActive(int id)
+    public async Task<ProductDto?> ToggleActive(int id)
     {
-        logger.LogInformation("Alterando status do cliente. Id: {CustomerId}", id);
+        logger.LogInformation("Alterando status do produto. Id: {ProductId}", id);
 
-        var customer = await context.Customer.FindAsync(id);
+        var product = await context.Product.FindAsync(id);
 
-        if (customer == null)
+        if (product == null)
         {
-            logger.LogWarning("Cliente não encontrado para alteração de status. Id: {CustomerId}", id);
+            logger.LogWarning("Produto não encontrado para alteração de status. Id: {ProductId}", id);
             return null;
         }
 
-        customer.Active = !customer.Active;
-
+        product.Active = !product.Active;
         await context.SaveChangesAsync();
 
-        logger.LogInformation(
-            "Status do cliente alterado. Id: {CustomerId}, Ativo: {Active}",
-            id,
-            customer.Active
-        );
+        logger.LogInformation("Status do produto alterado. Id: {ProductId}, Ativo: {Active}", id, product.Active);
 
-        return customer.ToDto();
+        return product.ToDto();
     }
 }
