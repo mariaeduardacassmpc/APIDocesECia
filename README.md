@@ -17,7 +17,7 @@ A API disponibiliza os recursos necessários para o gerenciamento das principais
 * Ativação e inativação de produtos e clientes
 * Geração de relatório de produtos, clientes e vendas
 * Validação de dados de entrada
-* Testes automatizados
+* Testes
 
 
 ## Tecnologias
@@ -54,7 +54,6 @@ A API disponibiliza os recursos necessários para o gerenciamento das principais
 ## Autenticação
 
 A API utiliza **JWT (JSON Web Token)** para autenticação.
-
 O usuário realiza o login fornecendo suas credenciais e, após a validação, a API retorna um token que deve ser utilizado nas requisições protegidas.
 
 Exemplo:
@@ -72,18 +71,14 @@ Authorization: Bearer {token}
 
 ## Produtos
 
-O módulo de produtos permite controlar os doces cadastrados no sistema.
-
-Entre as operações disponíveis estão:
+O módulo de produtos permite controlar os produtos cadastrados no sistema.
 
 * Cadastro de produtos
 * Consulta de produtos
 * Atualização de produtos
 * Ativação/inativação de produtos
 * Geração de relatório
-
-Em vez de excluir produtos que não estão mais sendo comercializados, o sistema permite **inativá-los**, preservando o histórico dos registros relacionados.
-
+  
 
 ## Clientes
 
@@ -92,8 +87,6 @@ As informações podem ser utilizadas posteriormente no registro das vendas, man
 
 
 ## Vendas
-
-O módulo de vendas permite registrar as vendas realizadas, relacionando informações como:
 
 * Cliente
 * Produtos
@@ -120,15 +113,7 @@ Os dados recebidos pela API passam por validações antes de serem processados.
 O projeto utiliza **FluentValidation** para centralizar regras de validação dos DTOs de entrada, evitando que dados inválidos sejam processados pela aplicação.
 
 Exemplo de fluxo:
-Request
-   ↓
-  DTO
-   ↓
-Validação
-   ↓
-Service
-   ↓
-Database
+Request > DTO > Validação > Service > Database
 
 
 ## Como executar
