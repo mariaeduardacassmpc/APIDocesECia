@@ -105,6 +105,15 @@ Exemplo de fluxo:
 Request > DTO > Validação > Service > Database
 
 
+## Testes
+
+O projeto possui testes unitários para os principais serviços da aplicação, utilizando:
+
+- **xUnit** — framework para execução dos testes;
+- **Moq** — criação de mocks para dependências;
+- **EF Core InMemory** — banco em memória para testar operações com o contexto.
+
+
 ## Objetivos técnicos
 
 Além de resolver uma necessidade de gestão, o projeto foi desenvolvido como uma oportunidade para praticar e consolidar conhecimentos em:
