@@ -104,7 +104,8 @@ O projeto utiliza **FluentValidation** para centralizar regras de validação do
 Exemplo de fluxo:
 Request > DTO > Validação > Service > Database
 
-### Testes
+
+## Testes
 
 O projeto possui testes unitários para os principais serviços da aplicação, utilizando:
 
