@@ -61,10 +61,10 @@ public class UserTests
         Assert.Equal("hashed-password", user.Password);
 
         passwordHasher.Verify(
-             h => h.HashPassword(
-                 It.IsAny<User>(),
-                 It.IsAny<string>()),
-             Times.Never);
+            h => h.HashPassword(
+                It.IsAny<User>(),
+                "123456"),
+            Times.Once);
     }
 
     [Fact]
