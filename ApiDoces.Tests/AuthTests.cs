@@ -5,6 +5,7 @@ using Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -28,12 +29,20 @@ public class AuthServiceTests
     {
         return new Mock<ITokenService>();
     }
-
     private static AuthService CreateService(ApplicationDbContext context, Mock<IPasswordHasher<User>> passwordHasher,
         Mock<ITokenService> tokenService)
     {
         var logger = new Mock<ILogger<AuthService>>();
-        return new AuthService(context, passwordHasher.Object, tokenService.Object, logger.Object);
+        var memoryCache = new Mock<IMemoryCache>();
+        var emailService = new Mock<IEmailService>();
+
+        return new AuthService(
+            context,
+            passwordHasher.Object,
+            tokenService.Object,
+            logger.Object,
+            memoryCache.Object,
+            emailService.Object);
     }
 
     [Fact]
