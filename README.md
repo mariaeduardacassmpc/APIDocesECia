@@ -41,15 +41,7 @@ A API disponibiliza os recursos necessários para o gerenciamento das principais
 * **Vite**
 * **Tailwind CSS**
 * **shadcn/ui**
-
-### Ferramentas
-
-* Git
-* GitHub
-* Visual Studio / VS Code
-* SQL Server
-* Swagger
-
+  
 
 ## Autenticação
 
@@ -111,34 +103,6 @@ O projeto utiliza **FluentValidation** para centralizar regras de validação do
 
 Exemplo de fluxo:
 Request > DTO > Validação > Service > Database
-
-
-## Como executar
-
-### 1. Clone o repositório
-
-git clone https://github.com/mariaeduardacassmpc/AdmDocesECia-API.git
-cd AdmDocesECia-API
-
-### 2. Configure a connection string
-
-Configure a conexão com seu banco de dados SQL Server no arquivo de configuração da API.
-
-Exemplo:
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=AdmDocesECia;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-
-### 3. Execute as migrations
-
-dotnet ef database update
-
-### 4. Execute a API
-
-dotnet run
-A API estará disponível localmente e a documentação poderá ser acessada através do Swagger.
 
 
 ## Objetivos técnicos
