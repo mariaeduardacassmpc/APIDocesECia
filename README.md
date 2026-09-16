@@ -58,7 +58,6 @@ O usuário realiza o login fornecendo suas credenciais e, após a validação, a
 
 Exemplo:
 POST /api/Auth/login
-
 Resposta:
 {
   "token": "eyJhbGciOiJIUzI1NiIs...",
@@ -70,8 +69,6 @@ Authorization: Bearer {token}
 
 
 ## Produtos
-
-O módulo de produtos permite controlar os produtos cadastrados no sistema.
 
 * Cadastro de produtos
 * Consulta de produtos
