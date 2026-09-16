@@ -1,4 +1,5 @@
-﻿using ApiDoces.Services;
+﻿using ApiDoces.Infra.JWT;
+using ApiDoces.Services;
 using ApiDoces.Services.Report;
 using Application.Interfaces;
 using Application.Services;
@@ -23,8 +24,10 @@ public static class DependencyInjectionExtensions
         services.AddScoped<CustomerReportService>();
         services.AddScoped<ProductReportService>();
         services.AddScoped<SaleReportService>();
+        services.AddScoped<AuthService>();
 
-
+        services.AddScoped<ITokenService, JwtTokenService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IImageStorage, FileSystemImageStorage>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 

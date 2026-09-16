@@ -13,7 +13,7 @@ public class JwtTokenService(IConfiguration config) : ITokenService
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expiresAt = DateTime.UtcNow.AddHours(2);
+        var expiresAt = DateTime.UtcNow.AddHours(1);
 
         var claims = new[]
         {

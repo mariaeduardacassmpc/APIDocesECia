@@ -1,5 +1,6 @@
 ﻿using ApiDoces.Extensions;
 using ApiDoces.Infra.JWT;
+using ApiDoces.Services;
 using Application.Interfaces;
 using Application.Services;
 using Data;
@@ -31,10 +32,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<ITokenService, JwtTokenService>();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -51,7 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddMemoryCache();
 builder.Services.AddApplicationServices(); 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

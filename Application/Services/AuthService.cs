@@ -4,12 +4,14 @@ using Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
 namespace Application.Services;
 
-public class AuthService(ApplicationDbContext context, IPasswordHasher<User> passwordHasher, ITokenService tokenService, ILogger<AuthService> logger)
+public class AuthService(ApplicationDbContext context, IPasswordHasher<User> passwordHasher, 
+    ITokenService tokenService, ILogger<AuthService> logger, IMemoryCache memoryCache, IEmailService emailService)
 {
     public async Task<AuthResponseDto?> Login(LoginDto dto)
     {
@@ -46,58 +48,45 @@ public class AuthService(ApplicationDbContext context, IPasswordHasher<User> pas
             }
         };
     }
+
+    public async Task ForgotPassword(ForgotPasswordDto dto)
+    {
+        var user = await context.User.SingleOrDefaultAsync(u => u.Email == dto.Email);
+
+        if (user == null)
+            return;
+
+        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+        memoryCache.Set(
+            $"password-reset:{dto.Email}",
+            token,
+            TimeSpan.FromMinutes(30));
+
+        await emailService.SendPasswordResetEmail(user.Email, token);
+    }
+
+    public async Task<bool> ResetPassword(PasswordResetDto dto)
+    {
+        var cacheKey = $"password-reset:{dto.Email}";
+
+        if (!memoryCache.TryGetValue(cacheKey, out string? storedToken))
+            return false;
+
+        if (storedToken != dto.Token)
+            return false;
+
+        var user = await context.User
+            .SingleOrDefaultAsync(u => u.Email == dto.Email);
+
+        if (user == null)
+            return false;
+
+        user.Password = passwordHasher.HashPassword(user, dto.NewPassword);
+
+        await context.SaveChangesAsync();
+        memoryCache.Remove(cacheKey);
+
+        return true;
+    }
 }
-
-//    public async Task ForgotPassword(ForgotPasswordDto dto)
-//    {
-//        var user = await context.User
-//            .SingleOrDefaultAsync(u => u.Email == dto.Email);
-
-//        if (user == null)
-//            return;
-
-//        var token = Convert.ToBase64String(
-//            RandomNumberGenerator.GetBytes(32));
-
-//        var passwordResetToken = new PasswordResetDto
-//        {
-//            UserId = user.UserId,
-//            Token = token,
-//            ExpiresAt = DateTime.UtcNow.AddMinutes(30),
-//            Used = false
-//        };
-
-//        context.PasswordResetToken.Add(passwordResetToken);
-
-//        await context.SaveChangesAsync();
-
-//        // Aqui entraria o envio do e-mail
-//        // await emailService.SendPasswordResetEmail(user.Email, token);
-//    }
-
-//    public async Task<bool> ResetPassword(PasswordResetDto dto)
-//    {
-//        var resetToken = await context.PasswordResetDto
-//            .Include(x => x.User)
-//            .SingleOrDefaultAsync(x =>
-//                x.Token == dto.Token &&
-//                x.User.Email == dto.Email &&
-//                !x.Used);
-
-//        if (resetToken == null)
-//            return false;
-
-//        if (resetToken.ExpiresAt < DateTime.UtcNow)
-//            return false;
-
-//        resetToken.User.Password = passwordHasher.HashPassword(
-//            resetToken.User,
-//            dto.NewPassword);
-
-//        resetToken.Used = true;
-
-//        await context.SaveChangesAsync();
-
-//        return true;
-//    }
-//}
