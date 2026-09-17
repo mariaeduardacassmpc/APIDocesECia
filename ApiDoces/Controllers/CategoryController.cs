@@ -21,6 +21,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll()
     {
         var categories = await categoryService.GetAllCategories();

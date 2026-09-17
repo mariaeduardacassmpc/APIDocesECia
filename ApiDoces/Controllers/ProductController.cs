@@ -22,6 +22,7 @@ public class ProductController(ProductService productService, ProductReportServi
     }
 
     [HttpGet]
+    [AllowAnonymous
     public async Task<IActionResult> GetAllProducts()
     {
         var products = await productService.GetAllProducts();
