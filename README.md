@@ -129,3 +129,5 @@ Além de resolver uma necessidade de gestão, o projeto foi desenvolvido como um
 * Integração entre frontend e backend
 * Organização de aplicações em camadas
 * Persistência e relacionamento de dados
+
+https://marcelo-doceiro.vercel.app/
