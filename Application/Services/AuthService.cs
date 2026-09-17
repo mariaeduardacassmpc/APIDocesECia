@@ -51,19 +51,29 @@ public class AuthService(ApplicationDbContext context, IPasswordHasher<User> pas
 
     public async Task ForgotPassword(ForgotPasswordDto dto)
     {
-        var user = await context.User.SingleOrDefaultAsync(u => u.Email == dto.Email);
+        var user = await context.User
+            .SingleOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null)
             return;
 
-        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        var token = Convert.ToBase64String(
+            RandomNumberGenerator.GetBytes(32)
+        )
+        .Replace("+", "-")
+        .Replace("/", "_")
+        .Replace("=", "");
 
         memoryCache.Set(
             $"password-reset:{dto.Email}",
             token,
-            TimeSpan.FromMinutes(30));
+            TimeSpan.FromMinutes(30)
+        );
 
-        await emailService.SendPasswordResetEmail(user.Email, token);
+        await emailService.SendPasswordResetEmail(
+            user.Email,
+            token
+        );
     }
 
     public async Task<bool> ResetPassword(PasswordResetDto dto)
