@@ -87,6 +87,18 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
             throw new InvalidOperationException($"Cliente com Id {id} não encontrado.");
         }
 
+        var emailExists = await context.Customer
+            .AnyAsync(c => c.Email == dto.Email && c.CustomerId != id);
+
+        if (emailExists)
+        {
+            logger.LogWarning(
+                "Tentativa de atualizar cliente com e-mail já cadastrado. Email: {Email}",
+                dto.Email);
+
+            throw new InvalidOperationException(ApiMessages.Email.AlreadyExists);
+        }
+
         dto.UpdateEntity(customer);
 
         await context.SaveChangesAsync();

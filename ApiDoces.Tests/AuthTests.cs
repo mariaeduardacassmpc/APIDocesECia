@@ -94,7 +94,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Login_ShouldThrowUnauthorizedAccessException_WhenUserDoesNotExist()
+    public async Task Login_ShouldThrowInvalidOperationException_WhenUserDoesNotExist()
     {
         await using var context = CreateContext();
 
@@ -109,13 +109,13 @@ public class AuthServiceTests
             Password = "123456"
         };
 
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.Login(dto));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.Login(dto));
 
         tokenService.Verify(x => x.GenerateToken(It.IsAny<User>()), Times.Never);
     }
 
     [Fact]
-    public async Task Login_ShouldThrowUnauthorizedAccessException_WhenPasswordIsInvalid()
+    public async Task Login_ShouldThrowInvalidOperationException_WhenPasswordIsInvalid()
     {
         await using var context = CreateContext();
 
@@ -130,6 +130,7 @@ public class AuthServiceTests
         await context.SaveChangesAsync();
 
         var passwordHasher = CreatePasswordHasher();
+
         passwordHasher.Setup(x => x.VerifyHashedPassword(user, user.Password, "senha-errada"))
             .Returns(PasswordVerificationResult.Failed);
 
@@ -143,7 +144,7 @@ public class AuthServiceTests
             Password = "senha-errada"
         };
 
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.Login(dto));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.Login(dto));
 
         tokenService.Verify(x => x.GenerateToken(It.IsAny<User>()), Times.Never);
     }
