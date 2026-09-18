@@ -1,5 +1,8 @@
-﻿using Application.Dtos.Category;
+﻿using ApiDoces.Helpers;
+using Application.Dtos.Category;
 using FluentValidation;
+
+namespace Application.Validators;
 
 public class CategoryValidator : AbstractValidator<CategoryInputDto>
 {
@@ -7,8 +10,8 @@ public class CategoryValidator : AbstractValidator<CategoryInputDto>
     {
         RuleFor(x => x.Name)
             .NotEmpty()
-            .WithMessage("Nome da categoria é obrigatório.")
+            .WithMessage(ApiMessages.RequiredField)
             .MaximumLength(100)
-            .WithMessage("Nome da categoria deve ter no máximo 50 caracteres.");
+            .WithMessage(ApiMessages.Category.NameMaxLength);
     }
 }

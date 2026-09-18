@@ -31,7 +31,12 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasDefaultValue(true);
 
         builder.Property(c => c.Email)
+            .IsRequired()
             .HasMaxLength(150);
+
+        builder.HasIndex(c => c.Email)
+            .IsUnique()
+            .HasDatabaseName("IX_Customer_Email");
 
         builder.Property(c => c.Obs)
             .HasMaxLength(500);

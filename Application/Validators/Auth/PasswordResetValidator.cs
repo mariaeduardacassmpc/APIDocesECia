@@ -1,7 +1,8 @@
-﻿using Application.Dtos.Auth;
+﻿using ApiDoces.Helpers;
+using Application.Dtos.Auth;
 using FluentValidation;
 
-namespace Application.Validators.Auth;
+namespace Application.Validators;
 
 public class PasswordResetValidator : AbstractValidator<PasswordResetDto>
 {
@@ -9,28 +10,28 @@ public class PasswordResetValidator : AbstractValidator<PasswordResetDto>
     {
         RuleFor(x => x.Email)
             .NotEmpty()
-            .WithMessage("E-mail é obrigatório.")
+            .WithMessage(ApiMessages.RequiredField)
             .EmailAddress()
-            .WithMessage("Informe um e-mail válido.");
+            .WithMessage(ApiMessages.Email.Invalid);
 
         RuleFor(x => x.Token)
             .NotEmpty()
-            .WithMessage("Token é obrigatório.");
+            .WithMessage(ApiMessages.RequiredField);
 
         RuleFor(x => x.NewPassword)
             .NotEmpty()
-            .WithMessage("Nova senha é obrigatória.")
+            .WithMessage(ApiMessages.RequiredField)
             .MinimumLength(8)
-            .WithMessage("Senha deve ter no mínimo 8 caracteres.")
+            .WithMessage(ApiMessages.Password.MinLength)
             .MaximumLength(50)
-            .WithMessage("Senha deve ter no máximo 50 caracteres.")
+            .WithMessage(ApiMessages.Password.MaxLength)
             .Matches("[A-Z]")
-            .WithMessage("Senha deve conter pelo menos uma letra maiúscula.")
+            .WithMessage(ApiMessages.Password.Uppercase)
             .Matches("[a-z]")
-            .WithMessage("Senha deve conter pelo menos uma letra minúscula.")
+            .WithMessage(ApiMessages.Password.Lowercase)
             .Matches("[0-9]")
-            .WithMessage("Senha deve conter pelo menos um número.")
+            .WithMessage(ApiMessages.Password.Number)
             .Matches("[^a-zA-Z0-9]")
-            .WithMessage("Senha deve conter pelo menos um caractere especial.");
+            .WithMessage(ApiMessages.Password.SpecialCharacter);
     }
 }

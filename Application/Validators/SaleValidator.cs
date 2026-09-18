@@ -1,7 +1,8 @@
-﻿using Application.Dtos.Sale;
+﻿using ApiDoces.Helpers;
+using Application.Dtos.Sale;
 using FluentValidation;
 
-namespace ApiDoces.Validators.Sale;
+namespace Application.Validators;
 
 public class CreateSaleValidator : AbstractValidator<InputSaleDto>
 {
@@ -9,17 +10,17 @@ public class CreateSaleValidator : AbstractValidator<InputSaleDto>
     {
         RuleFor(x => x.CustomerId)
             .GreaterThan(0)
-            .WithMessage("Cliente é obrigatório.");
+            .WithMessage(ApiMessages.RequiredField);
 
         RuleFor(x => x.PaymentMethod)
             .NotEmpty()
-            .WithMessage("Forma de pagamento é obrigatória.")
+            .WithMessage(ApiMessages.RequiredField)
             .MaximumLength(50)
-            .WithMessage("Forma de pagamento deve ter no máximo 50 caracteres.");
+            .WithMessage(ApiMessages.Sale.PaymentMethodMaxLength);
 
         RuleFor(x => x.Items)
             .NotEmpty()
-            .WithMessage("A venda deve possuir pelo menos um item.");
+            .WithMessage(ApiMessages.Sale.ItemsRequired);
 
         RuleForEach(x => x.Items)
             .SetValidator(new CreateSaleItemValidator());
@@ -32,14 +33,14 @@ public class CreateSaleItemValidator : AbstractValidator<CreateSaleItemDto>
     {
         RuleFor(x => x.ProductId)
             .GreaterThan(0)
-            .WithMessage("Produto é obrigatório.");
+            .WithMessage(ApiMessages.RequiredField);
 
         RuleFor(x => x.Quantity)
             .GreaterThan(0)
-            .WithMessage("A quantidade deve ser maior que zero.");
+            .WithMessage(ApiMessages.Sale.QuantityGreaterThanZero);
 
         RuleFor(x => x.UnitPrice)
             .GreaterThan(0)
-            .WithMessage("O preço unitário deve ser maior que zero.");
+            .WithMessage(ApiMessages.Sale.UnitPriceGreaterThanZero);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Application.Dtos.User;
+﻿using ApiDoces.Helpers;
 using FluentValidation;
 
 namespace Application.Validators;
@@ -9,30 +9,30 @@ public class UserValidator : AbstractValidator<InputUserDto>
     {
         RuleFor(x => x.Email)
             .MaximumLength(100)
-            .WithMessage("E-mail deve ter no máximo 100 caracteres.")
+            .WithMessage(ApiMessages.Email.MaxLength)
             .EmailAddress()
-            .When(x => !string.IsNullOrWhiteSpace(x.Email))
-            .WithMessage("E-mail inválido.");
+            .WithMessage(ApiMessages.Email.Invalid)
+            .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
         RuleFor(x => x.Password)
             .MinimumLength(8)
-            .WithMessage("Senha deve ter no mínimo 8 caracteres.")
+            .WithMessage(ApiMessages.Password.MinLength)
             .MaximumLength(50)
-            .WithMessage("Senha deve ter no máximo 50 caracteres.")
+            .WithMessage(ApiMessages.Password.MaxLength)
             .Matches("[A-Z]")
-            .WithMessage("Senha deve conter pelo menos uma letra maiúscula.")
+            .WithMessage(ApiMessages.Password.Uppercase)
             .Matches("[a-z]")
-            .WithMessage("Senha deve conter pelo menos uma letra minúscula.")
+            .WithMessage(ApiMessages.Password.Lowercase)
             .Matches("[0-9]")
-            .WithMessage("Senha deve conter pelo menos um número.")
+            .WithMessage(ApiMessages.Password.Number)
             .Matches("[^a-zA-Z0-9]")
-            .WithMessage("Senha deve conter pelo menos um caractere especial.")
+            .WithMessage(ApiMessages.Password.SpecialCharacter)
             .When(x => !string.IsNullOrWhiteSpace(x.Password));
 
         RuleFor(x => x)
             .Must(x =>
                 !string.IsNullOrWhiteSpace(x.Email) ||
                 !string.IsNullOrWhiteSpace(x.Password))
-            .WithMessage("Informe pelo menos um dado para alterar.");
+            .WithMessage(ApiMessages.RequiredField);
     }
 }

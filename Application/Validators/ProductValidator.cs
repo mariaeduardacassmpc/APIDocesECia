@@ -1,34 +1,44 @@
-﻿namespace Application.Dtos.Product;
-
+﻿using ApiDoces.Helpers;
+using Application.Dtos.Product;
 using FluentValidation;
+
+namespace Application.Validators;
 
 public class CreateProductDtoValidator : AbstractValidator<InputProductDto>
 {
     public CreateProductDtoValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("O nome é obrigatório.")
-            .MaximumLength(150).WithMessage("O nome deve ter no máximo 150 caracteres.");
+            .NotEmpty()
+            .WithMessage(ApiMessages.RequiredField)
+            .MaximumLength(150)
+            .WithMessage(ApiMessages.Product.NameMaxLength);
 
         RuleFor(x => x.CategoryId)
-             .GreaterThan(0)
-             .WithMessage("A categoria é obrigatória.");
+            .GreaterThan(0)
+            .WithMessage(ApiMessages.RequiredField);
 
         RuleFor(x => x.Description)
-            .MaximumLength(500).WithMessage("A descrição deve ter no máximo 500 caracteres.");
+            .MaximumLength(500)
+            .WithMessage(ApiMessages.Product.DescriptionMaxLength);
 
         RuleFor(x => x.PurchasePrice)
-            .GreaterThanOrEqualTo(0).WithMessage("O preço de compra não pode ser negativo.");
+            .GreaterThanOrEqualTo(0)
+            .WithMessage(ApiMessages.Product.PurchasePriceNotNegative);
 
         RuleFor(x => x.SalePrice)
-            .GreaterThan(0).WithMessage("O preço de venda deve ser maior que zero.")
-            .GreaterThanOrEqualTo(x => x.PurchasePrice).WithMessage("O preço de venda não pode ser menor que o preço de compra.");
+            .GreaterThan(0)
+            .WithMessage(ApiMessages.Product.SalePriceGreaterThanZero)
+            .GreaterThanOrEqualTo(x => x.PurchasePrice)
+            .WithMessage(ApiMessages.Product.SalePriceNotLessThanPurchase);
 
         RuleFor(x => x.Stock)
-            .GreaterThanOrEqualTo(0).WithMessage("O estoque não pode ser negativo.");
+            .GreaterThanOrEqualTo(0)
+            .WithMessage(ApiMessages.Product.StockNotNegative);
 
         RuleFor(x => x.Image)
-            .Must(BeAValidUrlOrNull).WithMessage("A URL da imagem informada não é válida.")
+            .Must(BeAValidUrlOrNull)
+            .WithMessage(ApiMessages.Product.ImageUrlInvalid)
             .When(x => !string.IsNullOrEmpty(x.Image));
     }
 

@@ -1,19 +1,27 @@
-﻿using Application.Dtos.Expense;
+﻿using ApiDoces.Helpers;
+using Application.Dtos.Expense;
 using FluentValidation;
+
+namespace Application.Validators;
 
 public class InputExpenseDtoValidator : AbstractValidator<InputExpenseDto>
 {
     public InputExpenseDtoValidator()
     {
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("A descrição é obrigatória.")
-            .MaximumLength(200).WithMessage("A descrição deve ter no máximo 200 caracteres.");
+            .NotEmpty()
+            .WithMessage(ApiMessages.RequiredField)
+            .MaximumLength(200)
+            .WithMessage(ApiMessages.Expense.DescriptionMaxLength);
 
         RuleFor(x => x.Value)
-            .GreaterThan(0).WithMessage("O valor deve ser maior que zero.");
+            .GreaterThan(0)
+            .WithMessage(ApiMessages.Expense.ValueGreaterThanZero);
 
         RuleFor(x => x.Date)
-            .NotEmpty().WithMessage("A data é obrigatória.")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("A data não pode ser futura.");
+            .NotEmpty()
+            .WithMessage(ApiMessages.RequiredField)
+            .LessThanOrEqualTo(DateTime.Now)
+            .WithMessage(ApiMessages.Expense.DateNotFuture);
     }
 }
