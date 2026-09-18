@@ -1,5 +1,4 @@
 ﻿using ApiDoces.Extensions;
-using Application.Validators.Auth;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using System.Text;
 using FluentValidation;
 using ApiDoces.Middlewares;
 using Application.Validators;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +50,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.AddApplicationServices();
+
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<PasswordResetValidator>();
 
 builder.Services.AddControllers();
