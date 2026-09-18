@@ -9,6 +9,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
+namespace ApiDoces.Tests.Services;
+
 public class AuthServiceTests
 {
     private static ApplicationDbContext CreateContext()
@@ -29,7 +31,10 @@ public class AuthServiceTests
     {
         return new Mock<ITokenService>();
     }
-    private static AuthService CreateService(ApplicationDbContext context, Mock<IPasswordHasher<User>> passwordHasher,
+
+    private static AuthService CreateService(
+        ApplicationDbContext context,
+        Mock<IPasswordHasher<User>> passwordHasher,
         Mock<ITokenService> tokenService)
     {
         var logger = new Mock<ILogger<AuthService>>();
@@ -61,13 +66,13 @@ public class AuthServiceTests
         await context.SaveChangesAsync();
 
         var passwordHasher = CreatePasswordHasher();
-        
+
         passwordHasher.Setup(x => x.VerifyHashedPassword(user, user.Password, "123456"))
             .Returns(PasswordVerificationResult.Success);
 
         var tokenService = CreateTokenService();
         var expiresAt = DateTime.UtcNow.AddHours(1);
-        
+
         tokenService.Setup(x => x.GenerateToken(user))
             .Returns(("fake-token", expiresAt));
 
@@ -89,7 +94,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task Login_ShouldReturnNull_WhenUserDoesNotExist()
+    public async Task Login_ShouldThrowUnauthorizedAccessException_WhenUserDoesNotExist()
     {
         await using var context = CreateContext();
 
@@ -104,15 +109,13 @@ public class AuthServiceTests
             Password = "123456"
         };
 
-        var result = await service.Login(dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.Login(dto));
 
         tokenService.Verify(x => x.GenerateToken(It.IsAny<User>()), Times.Never);
     }
 
     [Fact]
-    public async Task Login_ShouldReturnNull_WhenPasswordIsInvalid()
+    public async Task Login_ShouldThrowUnauthorizedAccessException_WhenPasswordIsInvalid()
     {
         await using var context = CreateContext();
 
@@ -140,9 +143,7 @@ public class AuthServiceTests
             Password = "senha-errada"
         };
 
-        var result = await service.Login(dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.Login(dto));
 
         tokenService.Verify(x => x.GenerateToken(It.IsAny<User>()), Times.Never);
     }

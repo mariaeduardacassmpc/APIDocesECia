@@ -254,16 +254,14 @@ public class ProductTests
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnNull_WhenProductDoesNotExist()
+    public async Task GetById_ShouldThrow_WhenProductDoesNotExist()
     {
         await using var context = CreateContext();
 
         var imageStorage = CreateImageStorage();
         var service = CreateService(context, imageStorage);
 
-        var result = await service.GetById(999);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetById(999));
     }
 
     [Fact]
@@ -320,7 +318,7 @@ public class ProductTests
     }
 
     [Fact]
-    public async Task UpdateProduct_ShouldReturnNull_WhenProductDoesNotExist()
+    public async Task UpdateProduct_ShouldThrow_WhenProductDoesNotExist()
     {
         await using var context = CreateContext();
 
@@ -339,9 +337,7 @@ public class ProductTests
             Active = true
         };
 
-        var result = await service.UpdateProduct(999, dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateProduct(999, dto));
     }
 
     [Fact]
@@ -465,14 +461,13 @@ public class ProductTests
     }
 
     [Fact]
-    public async Task ToggleActive_ShouldReturnNull_WhenProductDoesNotExist()
+    public async Task ToggleActive_ShouldThrow_WhenProductDoesNotExist()
     {
         await using var context = CreateContext();
 
         var imageStorage = CreateImageStorage();
         var service = CreateService(context, imageStorage);
-        var result = await service.ToggleActive(999);
 
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.ToggleActive(999));
     }
 }

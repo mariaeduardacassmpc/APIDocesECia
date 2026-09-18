@@ -102,7 +102,7 @@ public class CustomerTests
     }
 
     [Fact]
-    public async Task UpdateCustomer_ShouldReturnNull_WhenCustomerDoesNotExist()
+    public async Task UpdateCustomer_ShouldThrowException_WhenCustomerDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
@@ -118,9 +118,7 @@ public class CustomerTests
             Active = true
         };
 
-        var result = await service.UpdateCustomer(999, dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateCustomer(999, dto));
     }
 
     [Fact]
@@ -146,7 +144,7 @@ public class CustomerTests
         var service = CreateService(context);
 
         var result = await service.GetById(1);
-       
+
         Assert.NotNull(result);
         Assert.Equal("Maria", result.Name);
         Assert.Equal("maria@email.com", result.Email);
@@ -155,14 +153,12 @@ public class CustomerTests
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnNull_WhenCustomerDoesNotExist()
+    public async Task GetById_ShouldThrowException_WhenCustomerDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
 
-        var result = await service.GetById(999);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetById(999));
     }
 
     [Fact]
@@ -227,13 +223,11 @@ public class CustomerTests
     }
 
     [Fact]
-    public async Task ToggleActive_ShouldReturnNull_WhenCustomerDoesNotExist()
+    public async Task ToggleActive_ShouldThrowException_WhenCustomerDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
 
-        var result = await service.ToggleActive(999);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.ToggleActive(999));
     }
 }
