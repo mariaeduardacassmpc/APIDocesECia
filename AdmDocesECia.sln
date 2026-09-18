@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDoces", "ApiDoces\ApiDoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{8AD517E9-1DFD-4F63-AFF7-293DE6C3A196}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDoces.Tests", "ApiDoces.Tests\ApiDoces.Tests.csproj", "{77144F4E-2B6F-44F1-B348-6B9D4A24D518}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "ApiDoces.Tests\Tests.csproj", "{77144F4E-2B6F-44F1-B348-6B9D4A24D518}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
 	ProjectSection(SolutionItems) = preProject

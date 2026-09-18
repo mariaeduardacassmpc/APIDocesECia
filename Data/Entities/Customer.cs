@@ -7,7 +7,7 @@ public class Customer
     public required string Phone { get; set; }
     public required string City { get; set; }
     public required string Address { get; set; }
-    public required bool Active { get; set; }
+    public bool Active { get; set; } = true;
     public string? Email { get; set; }
     public string? Obs { get; set; }
 }

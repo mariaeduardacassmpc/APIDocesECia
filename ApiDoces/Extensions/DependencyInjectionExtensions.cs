@@ -26,8 +26,8 @@ public static class DependencyInjectionExtensions
         services.AddScoped<SaleReportService>();
         services.AddScoped<AuthService>();
 
+        services.AddHttpClient<IEmailService, EmailService>();
         services.AddScoped<ITokenService, JwtTokenService>();
-        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IImageStorage, FileSystemImageStorage>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
