@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Dtos.Auth;
+﻿namespace Application.Validators.Auth;
 
 using Application.Dtos.Auth;
 using FluentValidation;
