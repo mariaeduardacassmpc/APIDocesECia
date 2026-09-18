@@ -136,16 +136,14 @@ public class UserTests
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnNull_WhenUserDoesNotExist()
+    public async Task GetById_ShouldThrow_WhenUserDoesNotExist()
     {
         await using var context = CreateContext();
 
         var passwordHasher = CreatePasswordHasher();
         var service = CreateService(context, passwordHasher);
 
-        var result = await service.GetById(999);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetById(999));
     }
 
     [Fact]
@@ -190,9 +188,9 @@ public class UserTests
                 "new-password"),
             Times.Once);
     }
- 
+
     [Fact]
-    public async Task UpdateUser_ShouldReturnNull_WhenUserDoesNotExist()
+    public async Task UpdateUser_ShouldThrow_WhenUserDoesNotExist()
     {
         await using var context = CreateContext();
 
@@ -205,9 +203,7 @@ public class UserTests
             Password = "new-password"
         };
 
-        var result = await service.UpdateUser(999, dto);
- 
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateUser(999, dto));
     }
 
     [Fact]
@@ -228,9 +224,8 @@ public class UserTests
 
         var passwordHasher = CreatePasswordHasher();
         var service = CreateService(context, passwordHasher);
-        var result = await service.DeleteUser(1);
 
-        Assert.True(result);
+        await service.DeleteUser(1);
 
         var user = await context.User.FindAsync(1);
 
@@ -238,15 +233,13 @@ public class UserTests
     }
 
     [Fact]
-    public async Task DeleteUser_ShouldReturnFalse_WhenUserDoesNotExist()
+    public async Task DeleteUser_ShouldThrow_WhenUserDoesNotExist()
     {
         await using var context = CreateContext();
 
         var passwordHasher = CreatePasswordHasher();
         var service = CreateService(context, passwordHasher);
 
-        var result = await service.DeleteUser(999);
-
-        Assert.False(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteUser(999));
     }
 }

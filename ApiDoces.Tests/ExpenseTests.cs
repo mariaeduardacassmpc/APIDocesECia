@@ -119,18 +119,16 @@ public class ExpenseTests
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnNull_WhenExpenseDoesNotExist()
+    public async Task GetById_ShouldThrow_WhenExpenseDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
 
-        var result = await service.GetById(999);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetById(999));
     }
 
     [Fact]
-    public async Task UpdateExpense_ShouldReturnNull_WhenExpenseDoesNotExist()
+    public async Task UpdateExpense_ShouldThrow_WhenExpenseDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
@@ -142,9 +140,7 @@ public class ExpenseTests
             Date = new DateTime(2026, 9, 1)
         };
 
-        var result = await service.UpdateExpense(999, dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateExpense(999, dto));
     }
 
     [Fact]
@@ -164,21 +160,18 @@ public class ExpenseTests
 
         var service = CreateService(context);
 
-        var result = await service.DeleteExpense(1);
+        await service.DeleteExpense(1);
 
-        Assert.True(result);
         Assert.Null(await context.Expense.FindAsync(1));
     }
 
     [Fact]
-    public async Task DeleteExpense_ShouldReturnFalse_WhenExpenseDoesNotExist()
+    public async Task DeleteExpense_ShouldThrow_WhenExpenseDoesNotExist()
     {
         await using var context = CreateContext();
         var service = CreateService(context);
 
-        var result = await service.DeleteExpense(999);
-
-        Assert.False(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteExpense(999));
     }
 
     [Fact]
@@ -214,8 +207,20 @@ public class ExpenseTests
         );
 
         context.Expense.AddRange(
-            new Expense { ExpenseId = 1, Description = "Aluguel", Value = 200m, Date = new DateTime(2026, 9, 1) },
-            new Expense { ExpenseId = 2, Description = "Energia", Value = 100m, Date = new DateTime(2026, 8, 1) }
+            new Expense
+            {
+                ExpenseId = 1,
+                Description = "Aluguel",
+                Value = 200m,
+                Date = new DateTime(2026, 9, 1)
+            },
+            new Expense
+            {
+                ExpenseId = 2,
+                Description = "Energia",
+                Value = 100m,
+                Date = new DateTime(2026, 8, 1)
+            }
         );
 
         await context.SaveChangesAsync();

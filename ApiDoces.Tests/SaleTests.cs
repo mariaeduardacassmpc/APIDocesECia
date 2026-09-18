@@ -95,13 +95,12 @@ public class SaleServiceTests
     }
 
     [Fact]
-    public async Task GetSaleById_ShouldReturnNull_WhenSaleDoesNotExist()
+    public async Task GetSaleById_ShouldThrow_WhenSaleDoesNotExist()
     {
         using var context = CreateContext();
         var service = CreateService(context);
-        var result = await service.GetSaleById(999);
 
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetSaleById(999));
     }
 
     [Fact]
@@ -116,7 +115,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         };
 
         var product = new Product
@@ -174,12 +174,7 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            null,
-            null,
-            null,
-            null,
-            null);
+        var result = await service.GetAllSales(new SaleFilterDto());
 
         var sales = result.ToList();
 
@@ -198,7 +193,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         };
 
         context.Customer.Add(customer);
@@ -228,12 +224,10 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            "Pix",
-            null,
-            null,
-            null,
-            null);
+        var result = await service.GetAllSales(new SaleFilterDto
+        {
+            Payment = "Pix"
+        });
 
         var sales = result.ToList();
 
@@ -254,7 +248,8 @@ public class SaleServiceTests
                 Phone = "999999999",
                 City = "Londrina",
                 Address = "Rua A",
-                Active = true
+                Active = true,
+                Email = "maria@email.com"
             },
             new Customer
             {
@@ -263,7 +258,8 @@ public class SaleServiceTests
                 Phone = "988888888",
                 City = "Londrina",
                 Address = "Rua B",
-                Active = true
+                Active = true,
+                Email = "joao@email.com"
             });
 
         context.Sale.AddRange(
@@ -290,12 +286,10 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            null,
-            "Maria",
-            null,
-            null,
-            null);
+        var result = await service.GetAllSales(new SaleFilterDto
+        {
+            Search = "Maria"
+        });
 
         var sales = result.ToList();
 
@@ -315,7 +309,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         });
 
         context.Sale.AddRange(
@@ -352,12 +347,11 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            null,
-            null,
-            new DateTime(2026, 9, 14),
-            new DateTime(2026, 9, 16),
-            null);
+        var result = await service.GetAllSales(new SaleFilterDto
+        {
+            DateStart = new DateTime(2026, 9, 14),
+            DateEnd = new DateTime(2026, 9, 16)
+        });
 
         var sales = result.ToList();
 
@@ -377,7 +371,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         });
 
         context.Sale.AddRange(
@@ -405,12 +400,10 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            null,
-            null,
-            null,
-            null,
-            "antigos");
+        var result = await service.GetAllSales(new SaleFilterDto
+        {
+            SortBy = "antigos"
+        });
 
         var sales = result.ToList();
 
@@ -430,7 +423,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         });
 
         context.Sale.AddRange(
@@ -458,12 +452,10 @@ public class SaleServiceTests
 
         var service = CreateService(context);
 
-        var result = await service.GetAllSales(
-            null,
-            null,
-            null,
-            null,
-            "maior");
+        var result = await service.GetAllSales(new SaleFilterDto
+        {
+            SortBy = "maior"
+        });
 
         var sales = result.ToList();
 
@@ -483,7 +475,8 @@ public class SaleServiceTests
             Phone = "999999999",
             City = "Londrina",
             Address = "Rua Teste",
-            Active = true
+            Active = true,
+            Email = "maria@email.com"
         });
 
         var sale = new Sale
@@ -536,7 +529,7 @@ public class SaleServiceTests
     }
 
     [Fact]
-    public async Task UpdateSale_ShouldReturnNull_WhenSaleDoesNotExist()
+    public async Task UpdateSale_ShouldThrow_WhenSaleDoesNotExist()
     {
         using var context = CreateContext();
         var service = CreateService(context);
@@ -551,8 +544,6 @@ public class SaleServiceTests
             Items = new List<CreateSaleItemDto>()
         };
 
-        var result = await service.UpdateSale(999, dto);
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateSale(999, dto));
     }
 }

@@ -35,12 +35,13 @@ public class CategoryTests
             Name = "Doces"
         };
 
-        await service.CreateCategory(dto);
+        var result = await service.CreateCategory(dto);
 
         var category = await context.Category.FirstOrDefaultAsync(c => c.Name == "Doces");
 
         Assert.NotNull(category);
         Assert.Equal("Doces", category.Name);
+        Assert.Equal("Doces", result.Name);
     }
 
     [Fact]
@@ -67,7 +68,7 @@ public class CategoryTests
     public async Task GetAllCategories_ShouldReturnEmptyList_WhenThereAreNoCategories()
     {
         await using var context = CreateContext();
-        
+
         var service = CreateService(context);
         var result = (await service.GetAllCategories()).ToList();
 
@@ -90,26 +91,45 @@ public class CategoryTests
     }
 
     [Fact]
-    public async Task GetById_ShouldReturnNull_WhenCategoryDoesNotExist()
+    public async Task GetById_ShouldThrowException_WhenCategoryDoesNotExist()
     {
         await using var context = CreateContext();
-        
-        var service = CreateService(context);
-        var result = await service.GetById(999);
 
-        Assert.Null(result);
+        var service = CreateService(context);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetById(999));
     }
 
     [Fact]
-    public async Task UpdateCategory_ShouldReturnNull_WhenCategoryDoesNotExist()
+    public async Task UpdateCategory_ShouldUpdateCategory_WhenCategoryExists()
     {
         await using var context = CreateContext();
-        
+
+        context.Category.Add(new Category { CategoryId = 1, Name = "Doces" });
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+        var dto = new CategoryInputDto { Name = "Doces Finos" };
+
+        var result = await service.UpdateCategory(1, dto);
+
+        Assert.NotNull(result);
+        Assert.Equal("Doces Finos", result.Name);
+
+        var updatedCategory = await context.Category.FindAsync(1);
+        Assert.NotNull(updatedCategory);
+        Assert.Equal("Doces Finos", updatedCategory.Name);
+    }
+
+    [Fact]
+    public async Task UpdateCategory_ShouldThrowException_WhenCategoryDoesNotExist()
+    {
+        await using var context = CreateContext();
+
         var service = CreateService(context);
         var dto = new CategoryInputDto { Name = "Doces" };
-        var result = await service.UpdateCategory(999, dto);
 
-        Assert.Null(result);
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateCategory(999, dto));
     }
 
     [Fact]
@@ -121,20 +141,19 @@ public class CategoryTests
         await context.SaveChangesAsync();
 
         var service = CreateService(context);
-        var result = await service.DeleteCategory(1);
 
-        Assert.True(result);
+        await service.DeleteCategory(1);
+
         Assert.Null(await context.Category.FindAsync(1));
     }
 
     [Fact]
-    public async Task DeleteCategory_ShouldReturnFalse_WhenCategoryDoesNotExist()
+    public async Task DeleteCategory_ShouldThrowException_WhenCategoryDoesNotExist()
     {
         await using var context = CreateContext();
-        
-        var service = CreateService(context);
-        var result = await service.DeleteCategory(999);
 
-        Assert.False(result);
+        var service = CreateService(context);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteCategory(999));
     }
 }
