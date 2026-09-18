@@ -25,4 +25,11 @@ public static class ExpenseMappingExtensions
             Date = dto.Date
         };
     }
+
+    public static void UpdateEntity(this InputExpenseDto dto, Expense expense)
+    {
+        expense.Description = dto.Description;
+        expense.Value = dto.Value;
+        expense.Date = dto.Date;
+    }
 }

@@ -1,4 +1,4 @@
-﻿using ApiDoces.Mappings;
+﻿using Application.Helpers;
 using Application.Dtos.Customer;
 using Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,16 +8,26 @@ namespace ApiDoces.Services;
 
 public class CustomerService(ApplicationDbContext context, ILogger<CustomerService> logger)
 {
-    public async Task CreateCustomer(InputCustomerDto dto)
+    public async Task<CustomerDto> CreateCustomer(InputCustomerDto dto)
     {
         logger.LogInformation("Criando cliente: {CustomerName}", dto.Name);
 
         var customer = dto.ToEntity();
-
         context.Customer.Add(customer);
-        await context.SaveChangesAsync();
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("IX_Customer_Email") == true)
+        {
+            logger.LogWarning("Tentativa de criar cliente duplicado. Email: {Email}", dto.Email);
+            throw new InvalidOperationException(ApiMessages.Email.AlreadyExists);
+        }
 
         logger.LogInformation("Cliente criado com sucesso. Id: {CustomerId}", customer.CustomerId);
+
+        return customer.ToDto();
     }
 
     public async Task<IEnumerable<CustomerDto>> GetAllCustomers()
@@ -50,7 +60,7 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         return customers;
     }
 
-    public async Task<CustomerDto?> GetById(int id)
+    public async Task<CustomerDto> GetById(int id)
     {
         logger.LogInformation("Buscando cliente por Id: {CustomerId}", id);
 
@@ -59,13 +69,13 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         if (customer == null)
         {
             logger.LogWarning("Cliente não encontrado. Id: {CustomerId}", id);
-            return null;
+            throw new InvalidOperationException($"Cliente com Id {id} não encontrado.");
         }
 
         return customer.ToDto();
     }
 
-    public async Task<CustomerDto?> UpdateCustomer(int id, InputCustomerDto dto)
+    public async Task<CustomerDto> UpdateCustomer(int id, InputCustomerDto dto)
     {
         logger.LogInformation("Atualizando cliente. Id: {CustomerId}", id);
 
@@ -74,7 +84,7 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         if (customer == null)
         {
             logger.LogWarning("Cliente não encontrado para atualização. Id: {CustomerId}", id);
-            return null;
+            throw new InvalidOperationException($"Cliente com Id {id} não encontrado.");
         }
 
         dto.UpdateEntity(customer);
@@ -86,7 +96,7 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         return customer.ToDto();
     }
 
-    public async Task<CustomerDto?> ToggleActive(int id)
+    public async Task<CustomerDto> ToggleActive(int id)
     {
         logger.LogInformation("Alterando status do cliente. Id: {CustomerId}", id);
 
@@ -95,7 +105,7 @@ public class CustomerService(ApplicationDbContext context, ILogger<CustomerServi
         if (customer == null)
         {
             logger.LogWarning("Cliente não encontrado para alteração de status. Id: {CustomerId}", id);
-            return null;
+            throw new InvalidOperationException($"Cliente com Id {id} não encontrado.");
         }
 
         customer.Active = !customer.Active;

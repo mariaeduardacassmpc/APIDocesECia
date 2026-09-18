@@ -1,4 +1,4 @@
-﻿using ApiDoces.Helpers;
+﻿using Application.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
 using Application.Dtos.Expense;
@@ -17,7 +17,7 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     {
         await expenseService.CreateExpense(dto);
 
-        return Ok(ApiResponse.Success(ApiMessages.ExpenseCreated));
+        return Ok(ApiResponses.Created<object?>(null, ApiMessages.Created("Despesa")));
     }
 
     [HttpGet]
@@ -25,7 +25,7 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     {
         var expenses = await expenseService.GetAllExpenses();
 
-        return Ok(ApiResponse.Success(expenses));
+        return Ok(ApiResponses.Success(expenses));
     }
 
     [HttpGet("{id}")]
@@ -33,10 +33,7 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     {
         var expense = await expenseService.GetById(id);
 
-        if (expense == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ExpenseNotFound));
-
-        return Ok(ApiResponse.Success(expense));
+        return Ok(ApiResponses.Success(expense));
     }
 
     [HttpPut("{id}")]
@@ -44,21 +41,15 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     {
         var expense = await expenseService.UpdateExpense(id, dto);
 
-        if (expense == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ExpenseNotFound));
-
-        return Ok(ApiResponse.Success(expense, ApiMessages.ExpenseUpdated));
+        return Ok(ApiResponses.Success(expense, ApiMessages.Updated("Despesa")));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpense(int id)
     {
-        var deleted = await expenseService.DeleteExpense(id);
+        await expenseService.DeleteExpense(id);
 
-        if (!deleted)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ExpenseNotFound));
-
-        return Ok(ApiResponse.Success(ApiMessages.ExpenseDeleted));
+        return Ok(ApiResponses.Success(ApiMessages.Deleted("Despesa")));
     }
 
     [HttpGet("financial-summary")]
@@ -66,6 +57,6 @@ public class ExpenseController(ExpenseService expenseService) : ControllerBase
     {
         var financials = await expenseService.GetFinancialSummary(month, year);
 
-        return Ok(ApiResponse.Success(financials));
+        return Ok(ApiResponses.Success(financials));
     }
 }

@@ -57,24 +57,24 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return products;
     }
 
-    public async Task<ProductDto?> GetById(int id)
+    public async Task<ProductDto> GetById(int id)
     {
         logger.LogInformation("Buscando produto por Id: {ProductId}", id);
 
         var product = await context.Product
             .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.ProductId == id);
-            
+
         if (product == null)
         {
             logger.LogWarning("Produto não encontrado. Id: {ProductId}", id);
-            return null;
+            throw new InvalidOperationException($"Produto com Id {id} não encontrado.");
         }
 
         return product.ToDto();
     }
 
-    public async Task<ProductDto?> UpdateProduct(int id, InputProductDto dto)
+    public async Task<ProductDto> UpdateProduct(int id, InputProductDto dto)
     {
         logger.LogInformation("Atualizando produto. Id: {ProductId}", id);
 
@@ -83,7 +83,7 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         if (existingProduct == null)
         {
             logger.LogWarning("Produto não encontrado para atualização. Id: {ProductId}", id);
-            return null;
+            throw new InvalidOperationException($"Produto com Id {id} não encontrado.");
         }
 
         dto.UpdateEntity(existingProduct);
@@ -98,7 +98,7 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         return existingProduct.ToDto();
     }
 
-    public async Task<ProductDto?> ToggleActive(int id)
+    public async Task<ProductDto> ToggleActive(int id)
     {
         logger.LogInformation("Alterando status do produto. Id: {ProductId}", id);
 
@@ -107,7 +107,7 @@ public class ProductService(ApplicationDbContext context, IImageStorage imageSto
         if (product == null)
         {
             logger.LogWarning("Produto não encontrado para alteração de status. Id: {ProductId}", id);
-            return null;
+            throw new InvalidOperationException($"Produto com Id {id} não encontrado.");
         }
 
         product.Active = !product.Active;

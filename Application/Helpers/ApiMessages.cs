@@ -1,4 +1,4 @@
-﻿namespace ApiDoces.Helpers;
+﻿namespace Application.Helpers;
 
 public static class ApiMessages
 {
@@ -84,5 +84,8 @@ public static class ApiMessages
         public const string InvalidCredentials = "E-mail ou senha inválidos.";
         public const string Unauthorized = "Não autorizado.";
         public const string Forbidden = "Acesso negado.";
+        public const string PasswordResetRequested = "Se o e-mail estiver cadastrado, as instruções de recuperação serão enviadas.";
+        public const string InvalidOrExpiredToken = "Token inválido ou expirado.";
+        public const string PasswordResetSuccess = "Senha redefinida com sucesso.";
     }
 }

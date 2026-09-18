@@ -1,6 +1,6 @@
 ﻿using Application.Dtos.Auth;
 using FluentValidation;
-using ApiDoces.Helpers;
+using Application.Helpers;
 
 namespace Application.Validators.Auth;
 

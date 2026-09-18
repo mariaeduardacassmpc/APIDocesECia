@@ -1,4 +1,4 @@
-﻿using ApiDoces.Helpers;
+﻿using Application.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
 using Application.Dtos.Sale;
@@ -16,31 +16,25 @@ public class SalesController(SaleService salesService, SaleReportService saleRep
     [HttpPost]
     public async Task<IActionResult> CreateSale(InputSaleDto sale)
     {
-        if (sale == null)
-            return BadRequest(ApiResponse.BadRequest(ApiMessages.InvalidData));
-
         await salesService.CreateSales(sale);
-        return Ok(ApiResponse.Success(ApiMessages.SaleCreated));
+
+        return Ok(ApiResponses.Created<object?>(null, ApiMessages.Created("Venda")));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetSaleById(int id)
     {
         var sales = await salesService.GetSaleById(id);
-        if (sales == null)
-            return NotFound(ApiResponse.NotFound("Venda não encontrada."));
 
-        return Ok(ApiResponse.Success(sales));
+        return Ok(ApiResponses.Success(sales));
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SaleListDto>>> GetAllSales([FromQuery] string? payment, [FromQuery] string? search, [FromQuery] DateTime? dateStart, [FromQuery] DateTime? dateEnd, [FromQuery] string? sortBy)
+    public async Task<IActionResult> GetAllSales([FromQuery] SaleFilterDto filter)
     {
-        var sales = await salesService.GetAllSales(payment, search, dateStart, dateEnd, sortBy);
-        if (sales == null)
-            return NotFound(ApiResponse.NotFound("Venda não encontrada."));
+        var sales = await salesService.GetAllSales(filter);
 
-        return Ok(ApiResponse.Success(sales));
+        return Ok(ApiResponses.Success(sales));
     }
 
     [HttpPut("{id}")]
@@ -48,9 +42,7 @@ public class SalesController(SaleService salesService, SaleReportService saleRep
     {
         var updateSale = await salesService.UpdateSale(id, sale);
 
-        if (updateSale == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.SaleNotFound));
-        return Ok(ApiResponse.Success(updateSale, ApiMessages.SaleUpdated));
+        return Ok(ApiResponses.Success(updateSale, ApiMessages.Updated("Venda")));
     }
 
     [HttpGet("report")]
@@ -58,9 +50,6 @@ public class SalesController(SaleService salesService, SaleReportService saleRep
     {
         var file = await saleReport.GenerateSalesReport();
 
-        return File(
-            file,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 }

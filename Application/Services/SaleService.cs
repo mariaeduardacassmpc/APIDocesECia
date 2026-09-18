@@ -20,9 +20,9 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         logger.LogInformation("Venda criada com sucesso. Id: {SaleId}", sale.SaleId);
     }
 
-    public async Task<IEnumerable<SaleListDto>> GetAllSales(string? payment, string? search, DateTime? dateStart, DateTime? dateEnd, string? sortBy)
+    public async Task<IEnumerable<SaleListDto>> GetAllSales(SaleFilterDto filter)
     {
-        logger.LogInformation("Buscando vendas. Payment: {Payment}, Search: {Search}, DateStart: {DateStart}, DateEnd: {DateEnd}, SortBy: {SortBy}", payment, search, dateStart, dateEnd, sortBy);
+        logger.LogInformation("Buscando vendas. Payment: {Payment}, Search: {Search}, DateStart: {DateStart}, DateEnd: {DateEnd}, SortBy: {SortBy}", filter.Payment, filter.Search, filter.DateStart, filter.DateEnd, filter.SortBy);
 
         var query = context.Sale
             .Include(s => s.Customer)
@@ -30,26 +30,22 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
                 .ThenInclude(i => i.Product)
             .AsQueryable();
 
-        if (!string.IsNullOrEmpty(payment) && payment != "todos")
-            query = query.Where(s => s.PaymentMethod == payment);
+        if (!string.IsNullOrEmpty(filter.Payment) && filter.Payment != "todos")
+            query = query.Where(s => s.PaymentMethod == filter.Payment);
 
-        if (!string.IsNullOrEmpty(search))
+        if (!string.IsNullOrEmpty(filter.Search))
+            query = query.Where(s => s.Customer.Name.Contains(filter.Search) || s.Items.Any(i => i.Product.Name.Contains(filter.Search)));
+
+        if (filter.DateStart.HasValue)
+            query = query.Where(s => s.SaleDate >= filter.DateStart.Value);
+
+        if (filter.DateEnd.HasValue)
         {
-            query = query.Where(s =>
-                s.Customer.Name.Contains(search) ||
-                s.Items.Any(i => i.Product.Name.Contains(search)));
-        }
-
-        if (dateStart.HasValue)
-            query = query.Where(s => s.SaleDate >= dateStart.Value);
-
-        if (dateEnd.HasValue)
-        {
-            var endDate = dateEnd.Value.Date.AddDays(1);
+            var endDate = filter.DateEnd.Value.Date.AddDays(1);
             query = query.Where(s => s.SaleDate < endDate);
         }
 
-        query = sortBy switch
+        query = filter.SortBy switch
         {
             "antigos" => query.OrderBy(s => s.SaleDate),
             "maior" => query.OrderByDescending(s => s.TotalAmount),
@@ -64,7 +60,7 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         return sales.Select(s => s.ToListDto());
     }
 
-    public async Task<SaleDto?> GetSaleById(int id)
+    public async Task<SaleDto> GetSaleById(int id)
     {
         logger.LogInformation("Buscando venda por Id: {SaleId}", id);
 
@@ -73,13 +69,13 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         if (sale == null)
         {
             logger.LogWarning("Venda não encontrada. Id: {SaleId}", id);
-            return null;
+            throw new InvalidOperationException($"Venda com Id {id} não encontrada.");
         }
 
         return sale.ToDto();
     }
 
-    public async Task<SaleDto?> UpdateSale(int id, InputSaleDto dto)
+    public async Task<SaleDto> UpdateSale(int id, InputSaleDto dto)
     {
         logger.LogInformation("Atualizando venda. Id: {SaleId}", id);
 
@@ -88,11 +84,11 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         if (sale == null)
         {
             logger.LogWarning("Venda não encontrada para atualização. Id: {SaleId}", id);
-            return null;
+            throw new InvalidOperationException($"Venda com Id {id} não encontrada.");
         }
 
         dto.UpdateEntity(sale);
-        
+
         context.SaleItem.RemoveRange(sale.Items);
 
         sale.Items = dto.Items

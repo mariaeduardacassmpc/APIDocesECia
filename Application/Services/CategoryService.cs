@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Category;
+using ApiDoces.Mappings;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ namespace ApiDoces.Services;
 
 public class CategoryService(ApplicationDbContext context, ILogger<CategoryService> logger)
 {
-    public async Task CreateCategory(CategoryInputDto dto)
+    public async Task<CategoryDto> CreateCategory(CategoryInputDto dto)
     {
         logger.LogInformation("Criando categoria");
 
@@ -16,7 +17,9 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         context.Category.Add(category);
         await context.SaveChangesAsync();
 
-        logger.LogInformation("Categoria criada com sucesso. Id: {CategoryId}",category.CategoryId);
+        logger.LogInformation("Categoria criada com sucesso. Id: {CategoryId}", category.CategoryId);
+
+        return category.ToDto();
     }
 
     public async Task<IEnumerable<CategoryDto>> GetAllCategories()
@@ -30,7 +33,7 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         return categories.Select(x => x.ToDto());
     }
 
-    public async Task<CategoryDto?> GetById(int id)
+    public async Task<CategoryDto> GetById(int id)
     {
         logger.LogInformation("Buscando categoria por Id: {CategoryId}", id);
 
@@ -39,14 +42,13 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         if (category == null)
         {
             logger.LogWarning("Categoria não encontrada. Id: {CategoryId}", id);
-
-            return null;
+            throw new InvalidOperationException($"Categoria com Id {id} não encontrada.");
         }
 
         return category.ToDto();
     }
 
-    public async Task<CategoryDto?> UpdateCategory(int id, CategoryInputDto dto)
+    public async Task<CategoryDto> UpdateCategory(int id, CategoryInputDto dto)
     {
         logger.LogInformation("Atualizando categoria. Id: {CategoryId}", id);
 
@@ -55,9 +57,10 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         if (existingCategory == null)
         {
             logger.LogWarning("Categoria não encontrada para atualização. Id: {CategoryId}", id);
-
-            return null;
+            throw new InvalidOperationException($"Categoria com Id {id} não encontrada.");
         }
+
+        existingCategory.UpdateEntity(dto);
 
         await context.SaveChangesAsync();
 
@@ -66,7 +69,7 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         return existingCategory.ToDto();
     }
 
-    public async Task<bool> DeleteCategory(int id)
+    public async Task DeleteCategory(int id)
     {
         logger.LogInformation("Excluindo categoria. Id: {CategoryId}", id);
 
@@ -75,15 +78,12 @@ public class CategoryService(ApplicationDbContext context, ILogger<CategoryServi
         if (category == null)
         {
             logger.LogWarning("Categoria não encontrada para exclusão. Id: {CategoryId}", id);
-
-            return false;
+            throw new InvalidOperationException($"Categoria com Id {id} não encontrada.");
         }
 
         context.Category.Remove(category);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Categoria excluída com sucesso. Id: {CategoryId}", id);
-
-        return true;
     }
 }

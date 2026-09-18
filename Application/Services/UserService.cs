@@ -14,6 +14,11 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
     {
         logger.LogInformation("Criando usuário com e-mail: {Email}", dto.Email);
 
+        var emailExists = await context.User.AnyAsync(u => u.Email == dto.Email);
+
+        if (emailExists)
+            throw new InvalidOperationException("Já existe um cadastro com esse e-mail.");
+
         var user = new User
         {
             Email = dto.Email,
@@ -41,7 +46,7 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
         return users.Select(u => u.ToDto());
     }
 
-    public async Task<UserDto?> GetById(int id)
+    public async Task<UserDto> GetById(int id)
     {
         logger.LogInformation("Buscando usuário por Id: {UserId}", id);
 
@@ -50,13 +55,13 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
         if (user == null)
         {
             logger.LogWarning("Usuário não encontrado. Id: {UserId}", id);
-            return null;
+            throw new InvalidOperationException($"Usuário com Id {id} não encontrado.");
         }
 
         return user.ToDto();
     }
 
-    public async Task<UserDto?> UpdateUser(int id, InputUserDto dto)
+    public async Task<UserDto> UpdateUser(int id, InputUserDto dto)
     {
         logger.LogInformation("Atualizando usuário. Id: {UserId}", id);
 
@@ -65,15 +70,18 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
         if (existingUser == null)
         {
             logger.LogWarning("Usuário não encontrado para atualização. Id: {UserId}", id);
-            return null;
+            throw new InvalidOperationException($"Usuário com Id {id} não encontrado.");
         }
+
+        var emailExists = await context.User.AnyAsync(u => u.Email == dto.Email && u.UserId != id);
+
+        if (emailExists)
+            throw new InvalidOperationException("Já existe um cadastro com esse e-mail.");
 
         existingUser.Email = dto.Email;
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
-        {
             existingUser.Password = passwordHasher.HashPassword(existingUser, dto.Password);
-        }
 
         await context.SaveChangesAsync();
 
@@ -82,7 +90,7 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
         return existingUser.ToDto();
     }
 
-    public async Task<bool> DeleteUser(int id)
+    public async Task DeleteUser(int id)
     {
         logger.LogInformation("Excluindo usuário. Id: {UserId}", id);
 
@@ -91,14 +99,12 @@ public class UserService(ApplicationDbContext context, IPasswordHasher<User> pas
         if (user == null)
         {
             logger.LogWarning("Usuário não encontrado para exclusão. Id: {UserId}", id);
-            return false;
+            throw new InvalidOperationException($"Usuário com Id {id} não encontrado.");
         }
 
         context.User.Remove(user);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Usuário excluído com sucesso. Id: {UserId}", id);
-
-        return true;
     }
 }

@@ -1,4 +1,4 @@
-using ApiDoces.Helpers;
+using Application.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
 using ApiDoces.Services.Report;
@@ -18,7 +18,7 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         await productService.CreateProduct(dto);
 
-        return Ok(ApiResponse.Success(ApiMessages.ProductCreated));
+        return Ok(ApiResponses.Created<object?>(null, ApiMessages.Created("Produto")));
     }
 
     [HttpGet]
@@ -27,7 +27,7 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         var products = await productService.GetAllProducts();
 
-        return Ok(ApiResponse.Success(products));
+        return Ok(ApiResponses.Success(products));
     }
 
     [HttpGet("{id}")]
@@ -35,10 +35,7 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         var product = await productService.GetById(id);
 
-        if (product == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
-
-        return Ok(ApiResponse.Success(product));
+        return Ok(ApiResponses.Success(product));
     }
 
     [HttpPut("{id}")]
@@ -46,10 +43,7 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         var updatedProduct = await productService.UpdateProduct(id, product);
 
-        if (updatedProduct == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.ProductNotFound));
-
-        return Ok(ApiResponse.Success(updatedProduct, ApiMessages.ProductUpdated));
+        return Ok(ApiResponses.Success(updatedProduct, ApiMessages.Updated("Produto")));
     }
 
     [HttpPatch("{id}/active")]
@@ -57,10 +51,7 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         var product = await productService.ToggleActive(id);
 
-        if (product == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.CustomerNotFound));
-
-        return Ok(ApiResponse.Success(product));
+        return Ok(ApiResponses.Success(product));
     }
 
     [HttpGet("report")]
@@ -68,9 +59,6 @@ public class ProductController(ProductService productService, ProductReportServi
     {
         var file = await productReportService.GenerateProductsReport();
 
-        return File(
-            file,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-produtos-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 }

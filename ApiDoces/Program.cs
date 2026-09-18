@@ -1,15 +1,14 @@
 ﻿using ApiDoces.Extensions;
-using ApiDoces.Infra.JWT;
-using ApiDoces.Services;
-using Application.Interfaces;
-using Application.Services;
+using Application.Validators.Auth;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
+using FluentValidation;
+using ApiDoces.Middlewares;
+using Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,8 +49,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
-builder.Services.AddApplicationServices(); 
+builder.Services.AddApplicationServices();
+builder.Services.AddValidatorsFromAssemblyContaining<PasswordResetValidator>();
+
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -88,6 +90,7 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapGet("/", () => Results.Redirect("/swagger"))
    .AllowAnonymous()

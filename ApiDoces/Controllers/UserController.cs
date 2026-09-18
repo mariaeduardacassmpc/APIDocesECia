@@ -1,6 +1,6 @@
-﻿using Application.Services;
-using ApiDoces.Helpers;
+﻿using Application.Helpers;
 using ApiDoces.Responses;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +14,9 @@ public class UserController(UserService userService) : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> CreateUser(InputUserDto user)
     {
-        if (user == null)
-            return BadRequest(ApiResponse.BadRequest(ApiMessages.InvalidData));
-
         await userService.CreateUser(user);
 
-        return Ok(ApiResponse.Success(ApiMessages.UserCreated));
+        return Ok(ApiResponses.Created<object?>(null, ApiMessages.Created("Usuário")));
     }
 
     [HttpGet]
@@ -28,7 +25,7 @@ public class UserController(UserService userService) : ControllerBase
     {
         var users = await userService.GetAllUsers();
 
-        return Ok(ApiResponse.Success(users));
+        return Ok(ApiResponses.Success(users));
     }
 
     [HttpGet("{id}")]
@@ -37,10 +34,7 @@ public class UserController(UserService userService) : ControllerBase
     {
         var user = await userService.GetById(id);
 
-        if (user == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
-
-        return Ok(ApiResponse.Success(user));
+        return Ok(ApiResponses.Success(user));
     }
 
     [HttpPut("{id}")]
@@ -49,21 +43,15 @@ public class UserController(UserService userService) : ControllerBase
     {
         var updatedUser = await userService.UpdateUser(id, user);
 
-        if (updatedUser == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
-
-        return Ok(ApiResponse.Success(updatedUser, ApiMessages.UserUpdated));
+        return Ok(ApiResponses.Success(updatedUser, ApiMessages.Updated("Usuário")));
     }
 
     [HttpDelete("{id}")]
     [Authorize]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var deleted = await userService.DeleteUser(id);
+        await userService.DeleteUser(id);
 
-        if (!deleted)
-            return NotFound(ApiResponse.NotFound(ApiMessages.UserNotFound));
-
-        return Ok(ApiResponse.Success(ApiMessages.UserDeleted));
+        return Ok(ApiResponses.Success<object?>(null, ApiMessages.Deleted("Usuário")));
     }
 }

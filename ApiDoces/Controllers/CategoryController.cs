@@ -1,4 +1,4 @@
-﻿using ApiDoces.Helpers;
+﻿using Application.Helpers;
 using ApiDoces.Responses;
 using ApiDoces.Services;
 using Application.Dtos.Category;
@@ -13,11 +13,11 @@ namespace ApiDoces.Controllers;
 public class CategoryController(CategoryService categoryService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryInputDto dto)    
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryInputDto dto)
     {
         await categoryService.CreateCategory(dto);
 
-        return Ok(ApiResponse.Success(ApiMessages.CategoryCreated));
+        return Ok(ApiResponses.Success(ApiMessages.Created("Categoria")));
     }
 
     [HttpGet]
@@ -26,7 +26,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     {
         var categories = await categoryService.GetAllCategories();
 
-        return Ok(ApiResponse.Success(categories));
+        return Ok(ApiResponses.Success(categories));
     }
 
     [HttpGet("{id}")]
@@ -34,10 +34,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     {
         var category = await categoryService.GetById(id);
 
-        if (category == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
-
-        return Ok(ApiResponse.Success(category));
+        return Ok(ApiResponses.Success(category));
     }
 
     [HttpPut("{id}")]
@@ -45,10 +42,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     {
         var updatedCategory = await categoryService.UpdateCategory(id, category);
 
-        if (updatedCategory == null)
-            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
-
-        return Ok(ApiResponse.Success(updatedCategory, ApiMessages.CategoryUpdated));
+        return Ok(ApiResponses.Success(updatedCategory, ApiMessages.Updated("Categoria")));
     }
 
     [HttpDelete("{id}")]
@@ -56,9 +50,6 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     {
         var deleted = await categoryService.DeleteCategory(id);
 
-        if (!deleted)
-            return NotFound(ApiResponse.NotFound(ApiMessages.CategoryNotFound));
-
-        return Ok(ApiResponse.Success(ApiMessages.CategoryDeleted));
+        return Ok(ApiResponses.Success(ApiMessages.Deleted("Categoria")));
     }
 }

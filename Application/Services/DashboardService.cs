@@ -55,8 +55,13 @@ public class DashboardService(ApplicationDbContext context, ILogger<DashboardSer
             TopSellingProducts = topSellingProducts
         };
 
-        logger.LogInformation(
-            "Dashboard carregado. Produtos: {Products}, Clientes: {Customers}, Vendas hoje: {SalesToday}, Receita hoje: {RevenueToday}",
+        if (dashboard == null)
+        {
+            logger.LogWarning("Falha ao consolidar os dados do dashboard");
+            throw new InvalidOperationException("Não foi possível carregar os dados do dashboard.");
+        }
+
+        logger.LogInformation("Dashboard carregado. Produtos: {Products}, Clientes: {Customers}, Vendas hoje: {SalesToday}, Receita hoje: {RevenueToday}",
             totalProducts, totalCustomers, salesToday, revenueToday);
 
         return dashboard;

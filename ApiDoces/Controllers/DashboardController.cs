@@ -1,4 +1,5 @@
-﻿using ApiDoces.Responses;
+﻿using Application.Helpers;
+using ApiDoces.Responses;
 using ApiDoces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,6 @@ public class DashboardController(DashboardService dashboardService) : Controller
     public async Task<IActionResult> GetDashboard()
     {
         var result = await dashboardService.GetDashboard();
-
-        return Ok(ApiResponse.Success(result));
+        return Ok(ApiResponses.Success(result));
     }
 }

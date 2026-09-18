@@ -19,4 +19,9 @@ public static class CategoryMappingExtensions
             Name = dto.Name
         };
     }
+
+    public static void UpdateEntity(this Category category, CategoryInputDto dto)
+    {
+        category.Name = dto.Name;
+    }
 }

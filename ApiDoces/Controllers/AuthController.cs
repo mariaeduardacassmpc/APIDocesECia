@@ -1,4 +1,4 @@
-﻿using ApiDoces.Helpers;
+﻿using Application.Helpers;
 using ApiDoces.Responses;
 using Application.Dtos.Auth;
 using Application.Services;
@@ -17,10 +17,7 @@ public class AuthController(AuthService authService) : ControllerBase
     {
         var result = await authService.Login(dto);
 
-        if (result == null)
-            return Unauthorized(ApiResponse.BadRequest(ApiMessages.InvalidCredentials));
-
-        return Ok(ApiResponse.Success(result));
+        return Ok(ApiResponses.Success(result));
     }
 
     [HttpPost("forgot-password")]
@@ -28,18 +25,14 @@ public class AuthController(AuthService authService) : ControllerBase
     {
         await authService.ForgotPassword(dto);
 
-        return Ok(ApiResponse.Success("Se o e-mail estiver cadastrado, as instruções de recuperação serão enviadas."
-        ));
+        return Ok(ApiResponses.Success(ApiMessages.Auth.PasswordResetRequested));
     }
 
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(PasswordResetDto dto)
     {
-        var result = await authService.ResetPassword(dto);
+        await authService.ResetPassword(dto);
 
-        if (!result)
-            return BadRequest(ApiResponse.BadRequest("Token inválido ou expirado."));
-
-        return Ok(ApiResponse.Success("Senha redefinida com sucesso."));
+        return Ok(ApiResponses.Success(ApiMessages.Auth.PasswordResetSuccess));
     }
 }

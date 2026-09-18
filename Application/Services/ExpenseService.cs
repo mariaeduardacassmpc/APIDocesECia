@@ -35,7 +35,7 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         return expenses.Select(x => x.ToDto());
     }
 
-    public async Task<ExpenseDto?> GetById(int id)
+    public async Task<ExpenseDto> GetById(int id)
     {
         logger.LogInformation("Buscando despesa por Id: {ExpenseId}", id);
 
@@ -44,13 +44,13 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         if (expense == null)
         {
             logger.LogWarning("Despesa não encontrada. Id: {ExpenseId}", id);
-            return null;
+            throw new InvalidOperationException($"Despesa com Id {id} não encontrada.");
         }
 
         return expense.ToDto();
     }
 
-    public async Task<ExpenseDto?> UpdateExpense(int id, InputExpenseDto dto)
+    public async Task<ExpenseDto> UpdateExpense(int id, InputExpenseDto dto)
     {
         logger.LogInformation("Atualizando despesa. Id: {ExpenseId}", id);
 
@@ -59,8 +59,10 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         if (existingExpense == null)
         {
             logger.LogWarning("Despesa não encontrada para atualização. Id: {ExpenseId}", id);
-            return null;
+            throw new InvalidOperationException($"Despesa com Id {id} não encontrada.");
         }
+
+        dto.UpdateEntity(existingExpense);
 
         await context.SaveChangesAsync();
 
@@ -69,7 +71,7 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         return existingExpense.ToDto();
     }
 
-    public async Task<bool> DeleteExpense(int id)
+    public async Task DeleteExpense(int id)
     {
         logger.LogInformation("Excluindo despesa. Id: {ExpenseId}", id);
 
@@ -78,15 +80,13 @@ public class ExpenseService(ApplicationDbContext context, ILogger<ExpenseService
         if (expense == null)
         {
             logger.LogWarning("Despesa não encontrada para exclusão. Id: {ExpenseId}", id);
-            return false;
+            throw new InvalidOperationException($"Despesa com Id {id} não encontrada.");
         }
 
         context.Expense.Remove(expense);
         await context.SaveChangesAsync();
 
         logger.LogInformation("Despesa excluída com sucesso. Id: {ExpenseId}", id);
-
-        return true;
     }
 
     public async Task<FinancialSummaryDto> GetFinancialSummary(int month, int year)

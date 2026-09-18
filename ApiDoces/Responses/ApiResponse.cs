@@ -1,85 +1,40 @@
 ﻿namespace ApiDoces.Responses;
 
-public static class ApiResponse
+public record ApiResponse<T>(bool Success, string? Message, T? Data);
+
+public static class ApiResponses
 {
-    public static object Success<T>(T data, string? message = null)
-    {
-        return new
-        {
-            success = true,
-            message,
-            data
-        };
-    }
+    public static ApiResponse<T> Success<T>(
+        T data,
+        string? message = null)
+        => new(true, message, data);
 
-    public static object Created<T>(T data, string? message = null)
-    {
-        return new
-        {
-            success = true,
-            message,
-            data
-        };
-    }
+    public static ApiResponse<T> Created<T>(
+        T data,
+        string? message = null)
+        => new(true, message, data);
 
-    public static object BadRequest(string message)
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> BadRequest<T>(
+        string message)
+        => new(false, message, default);
 
-    public static object Unauthorized(string message = "Não autorizado.")
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> Unauthorized<T>(
+        string message)
+        => new(false, message, default);
 
-    public static object Forbidden(string message = "Acesso negado.")
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> Forbidden<T>(
+        string message)
+        => new(false, message, default);
 
-    public static object NotFound(string message)
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> NotFound<T>(
+        string message)
+        => new(false, message, default);
 
-    public static object Conflict(string message)
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> Conflict<T>(
+        string message)
+        => new(false, message, default);
 
-    public static object InternalServerError(
-        string message = "Ocorreu um erro inesperado.")
-    {
-        return new
-        {
-            success = false,
-            message,
-            data = (object?)null
-        };
-    }
+    public static ApiResponse<T> InternalServerError<T>(
+        string message)
+        => new(false, message, default);
 }
