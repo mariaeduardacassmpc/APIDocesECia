@@ -48,7 +48,7 @@ public class CategoryController(CategoryService categoryService) : ControllerBas
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        var deleted = await categoryService.DeleteCategory(id);
+        await categoryService.DeleteCategory(id);
 
         return Ok(ApiResponses.Success(ApiMessages.Deleted("Categoria")));
     }
