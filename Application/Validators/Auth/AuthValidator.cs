@@ -16,18 +16,6 @@ public class AuthDtoValidator : AbstractValidator<LoginDto>
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .WithMessage(ApiMessages.RequiredField)
-            .MinimumLength(8)
-            .WithMessage(ApiMessages.Password.MinLength)
-            .MaximumLength(50)
-            .WithMessage(ApiMessages.Password.MaxLength)
-            .Matches("[A-Z]")
-            .WithMessage(ApiMessages.Password.Uppercase)
-            .Matches("[a-z]")
-            .WithMessage(ApiMessages.Password.Lowercase)
-            .Matches("[0-9]")
-            .WithMessage(ApiMessages.Password.Number)
-            .Matches("[^a-zA-Z0-9]")
-            .WithMessage(ApiMessages.Password.SpecialCharacter);
+            .WithMessage(ApiMessages.RequiredField);
     }
 }
