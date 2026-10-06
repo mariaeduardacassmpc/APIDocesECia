@@ -12,9 +12,40 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
     {
         logger.LogInformation("Criando nova venda");
 
+        var productIds = dto.Items
+            .Select(x => x.ProductId)
+            .Distinct()
+            .ToList();
+
+        var products = await context.Product
+            .Where(p => productIds.Contains(p.ProductId))
+            .ToListAsync();
+
+        foreach (var item in dto.Items)
+        {
+            var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+
+            if (product is null)
+                throw new Exception($"Produto {item.ProductId} não encontrado.");
+
+            if (product.Stock < item.Quantity)
+                throw new Exception(
+                    $"Estoque insuficiente para o produto {product.Name}. " +
+                    $"Disponível: {product.Stock}. Solicitado: {item.Quantity}.");
+        }
+
+        foreach (var item in dto.Items)
+        {
+            var product = products.First(p => p.ProductId == item.ProductId);
+            product.Stock -= item.Quantity;
+        }
+
         var sale = dto.ToEntity();
 
+        sale.TotalAmount = dto.Items.Sum(item => item.Quantity * item.UnitPrice);
+
         context.Sale.Add(sale);
+
         await context.SaveChangesAsync();
 
         logger.LogInformation("Venda criada com sucesso. Id: {SaleId}", sale.SaleId);
@@ -94,6 +125,8 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
         sale.Items = dto.Items
             .Select(item => item.ToEntity())
             .ToList();
+
+        sale.TotalAmount = sale.Items.Sum(item => item.Quantity * item.UnitPrice);
 
         await context.SaveChangesAsync();
 
