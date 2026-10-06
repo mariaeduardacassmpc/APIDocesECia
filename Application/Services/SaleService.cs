@@ -110,7 +110,9 @@ public class SaleService(ApplicationDbContext context, ILogger<SaleService> logg
     {
         logger.LogInformation("Atualizando venda. Id: {SaleId}", id);
 
-        var sale = await context.Sale.FindAsync(id);
+        var sale = await context.Sale
+            .Include(s => s.Items)
+            .FirstOrDefaultAsync(s => s.SaleId == id);
 
         if (sale == null)
         {

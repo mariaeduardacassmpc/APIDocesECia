@@ -13,7 +13,7 @@ public static class SaleMappingExtensions
             Description = sale.Description,
             CustomerId = sale.CustomerId,
             PaymentMethod = sale.PaymentMethod,
-            TotalAmount = sale.TotalAmount,
+            TotalAmount = sale.Items.Sum(item => item.Quantity * item.UnitPrice),
             SaleDate = sale.SaleDate,
 
             Items = sale.Items
@@ -78,7 +78,7 @@ public static class SaleMappingExtensions
             CustomerId = sale.CustomerId,
             CustomerName = sale.Customer.Name,
             PaymentMethod = sale.PaymentMethod,
-            TotalAmount = sale.TotalAmount,
+            TotalAmount = sale.Items.Sum(item => item.Quantity * item.UnitPrice),
             SaleDate = sale.SaleDate,
 
             Items = sale.Items.Select(item => new SaleListItemDto
